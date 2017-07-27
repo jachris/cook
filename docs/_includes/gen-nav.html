@@ -1,0 +1,11 @@
+{% assign current = page.url %}
+<ul>
+    {% for entry in include.entries %}
+    <li {% if entry.link == current %} class="active" {% endif %}>
+        <a href="{{ entry.link }}">{{ entry.name }}</a>
+        {% if entry.subs %}
+            {% include gen-nav.html entries=entry.subs %}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

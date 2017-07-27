@@ -1,0 +1,12 @@
+- name: Documentation
+  link: /docs/
+- name: Comparison
+  link: /comparison/
+- name: Installation
+  link: /installation/
+- name: ↗ Examples
+  link: https://github.com/jachris/cook/tree/master/examples/
+# - name: Blog
+#   link: /blog/
+- name: ↗ GitHub
+  link: https://github.com/jachris/cook

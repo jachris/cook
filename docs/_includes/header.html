@@ -1,0 +1,25 @@
+<header>
+    <nav class="page-header">
+        <div class="container">
+            <div class="nav-logo-container">
+                <a class="nav-logo" href="/">
+                    <img src="/img/logo.svg" style="height: 100%;">
+                </a>
+            </div>
+            <select class="toggle-nav" onchange="window.location.href=this.value">
+                <option disabled selected style="display: none;">Navigation ...</option>
+                {% include gen-select-nav.html entries=site.data.header %}
+            </select>
+            <div class="nav-entries">
+                {% include gen-nav.html entries=site.data.header %}
+            </div>
+        </div>
+    </nav>
+    {% if include.subtitle %}
+    <div class="subheader">
+        <div class="container">
+            <span class="subheader-name">{{ include.subtitle }}</span>
+        </div>
+    </div>
+    {% endif %}
+</header>

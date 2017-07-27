@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en-US">
+{% include head.html %}
+<body>
+    {% include header.html subtitle="A Modern Build-System" %}
+    <main>
+        {% include gen-nav.html entries=site.data.docs %}
+        <hr>
+        {{ content }}
+    </main>
+    {% include footer.html %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+- name: Overview
+  link: /docs/
+- name: Getting Started
+  link: /docs/getting-started/
+- name: Custom Rules
+  link: /docs/custom-rules/
+- name: Builtin Rules
+  link: /docs/rules/
+  subs:
+    - name: C++
+      link: /docs/rules/cpp/
+    - name: File
+      link: /docs/rules/file/
+    - name: GIMP
+      link: /docs/rules/gimp/
+    - name: LaTeX
+      link: /docs/rules/latex/
+    - name: LibreOffice
+      link: /docs/rules/libreoffice/
+- name: API Reference
+  link: /docs/api/
