@@ -158,7 +158,7 @@ def main():
     arg('-o', '--output', metavar='PATH',
         help='override build directory')
     arg('rest', nargs='*', help=argparse.SUPPRESS)
-    arg('-r', '--results', action='store_true')
+    arg('--results', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
 
     verbose = args.verbose

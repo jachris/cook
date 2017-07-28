@@ -18,7 +18,6 @@ Arguments:
   -j, --jobs INT     number of jobs (default: 5)
   -v, --verbose      enable debug mode
   -o, --output PATH  override build directory
-  -r, --results
 ```
 
 Let's create a new C++ project using Cook.
