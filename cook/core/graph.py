@@ -321,7 +321,3 @@ class Result:
 
     def __dir__(self):
         return [attr for attr in self.__dict__ if not attr.startswith('_')]
-
-
-def has_primary(primary):
-    return primary in primaries
