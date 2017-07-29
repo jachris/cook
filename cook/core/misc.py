@@ -6,6 +6,7 @@ import random as _random
 import struct
 import subprocess
 import sys
+import threading
 
 from . import loader, log
 
@@ -13,6 +14,25 @@ system = platform.system()
 linux = system == 'Linux'
 windows = system == 'Windows'
 mac = system == 'darwin'
+
+
+def cache(func):
+    """Thread-safe caching."""
+    lock = threading.Lock()
+    results = {}
+
+    def wrapper(*args, **kwargs):
+        identifier = checksum(args, kwargs)
+        if identifier in results:
+            return results[identifier]
+        with lock:
+            if identifier in results:
+                return results[identifier]
+            result = func(*args, **kwargs)
+            results[identifier] = result
+            return result
+
+    return wrapper
 
 
 def checksum(*objects):

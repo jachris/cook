@@ -3,7 +3,7 @@ from .loader import load, resolve
 from .log import debug, info, warning, error
 from .misc import (
     glob, which, linux, mac, windows, checksum, absolute, relative, call,
-    random, base_no_ext, extension, CallError
+    random, base_no_ext, extension, CallError, cache
 )
 from .options import option
 from .rules import rule, publish, deposit, task
