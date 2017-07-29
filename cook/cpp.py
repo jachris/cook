@@ -381,16 +381,6 @@ def find_shared_library(name):
 _GNU = 'GNU'
 _MSVC = 'MSVC'
 
-_compiler = None
-_toolchain = None
-_prepare_lock = threading.Lock()
-_prepared = False
-
-_msvc_envs = {}
-_msvc_envs_lock = threading.Lock()
-_gnu_color_support = {}
-_gnu_color_lock = threading.Lock()
-
 
 def _find(name):
     architectures = ['x86_64-linux-gnu', 'i386-linux-gnu']
@@ -413,35 +403,29 @@ def _find(name):
             return path
 
 
+@core.cache
 def _get_default_compiler():
-    if not _prepared:
-        with _prepare_lock:
-            if not _prepared:
-                _do_get_default_compiler()
-    return _compiler, _toolchain
-
-
-def _do_get_default_compiler():
-    global _compiler, _toolchain, _prepared
-
-    _compiler = os.environ.get('CXX')
-    if _compiler is not None:
-        _compiler = core.which(_compiler)
-        if _compiler is None:
+    compiler = os.environ.get('CXX')
+    if compiler is not None:
+        compiler = core.which(compiler)
+        if compiler is None:
             raise FileNotFoundError('CXX compiler does not exist')
-        _toolchain = _get_toolchain(_compiler)
+        toolchain = _get_toolchain(compiler)
     elif core.windows:
-        _compiler = _msvc_find_cl()
-        _toolchain = _get_toolchain(_compiler)
-    if _compiler is None:
-        _compiler = core.which('c++') or core.which('g++')
-        _toolchain = _get_toolchain(_compiler)
+        compiler = _msvc_find_cl()
+        toolchain = _get_toolchain(compiler)
 
-    if _compiler is None or _toolchain is None:
+    if compiler is None:
+        compiler = core.which('c++') or core.which('g++')
+        toolchain = _get_toolchain(compiler)
+
+    if compiler is None:
         ValueError('compiler could not be determined')
+    elif toolchain is None:
+        raise ValueError('toolchain could not be detected')
 
-    core.debug('Detected C++ compiler: {} [{}]'.format(_compiler, _toolchain))
-    _prepared = True
+    core.debug('Detected C++ compiler: {} [{}]'.format(compiler, toolchain))
+    return compiler, toolchain
 
 
 def _get_toolchain(compiler):
@@ -455,17 +439,8 @@ def _get_toolchain(compiler):
         return _MSVC
 
 
+@core.cache
 def _msvc_get_cl_env(cl):
-    with _msvc_envs_lock:
-        if cl in _msvc_envs:
-            return _msvc_envs[cl]
-        else:
-            env = _msvc_extract_env(cl)
-            _msvc_envs[cl] = env
-            return env
-
-
-def _msvc_extract_env(cl):
     core.debug('Extracting environment for {}'.format(cl))
     bat = os.path.normpath(
         os.path.join(os.path.dirname(cl), '../vcvarsall.bat'))
@@ -522,16 +497,10 @@ def _msvc_extract_includes(output):
     return used
 
 
+@core.cache
 def _gnu_supports_colors(compiler):
-    if compiler in _gnu_color_support:
-        return _gnu_color_support[compiler]
-    with _gnu_color_lock:
-        if compiler in _gnu_color_support:
-            return _gnu_color_support[compiler]
-        try:
-            core.call([compiler, '-fdiagnostics-color'])
-        except core.CallError as exc:
-            result = ('unrecognized command line option' not in exc.output
-                      and 'unknown argument' not in exc.output)
-            _gnu_color_support[compiler] = result
-            return result
+    try:
+        core.call([compiler, '-fdiagnostics-color'])
+    except core.CallError as exc:
+        return ('unknown argument' not in exc.output and
+                'unrecognized command line option' not in exc.output)
