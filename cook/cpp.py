@@ -464,8 +464,8 @@ def _msvc_get_cl_env(cl):
 
 
 def _msvc_find_cl():
-    for version in ['120']:
-        tools = os.environ.get('VS' + version + 'COMNTOOLS')
+    for version in [140, 120, 110, 100, 90, 80, 71, 70]:
+        tools = os.environ.get('VS{}COMNTOOLS'.format(version))
         if not tools:
             continue
         cl = os.path.normpath(os.path.join(tools, '../../VC/bin/cl.exe'))
