@@ -98,7 +98,7 @@ def which(file, env=os.environ):
 
 if sys.version_info >= (3, 5):
     def glob(pathname):
-        return absolute(_glob.iglob(loader.resolve(pathname)))
+        return absolute(_glob.iglob(loader.resolve(pathname), recursive=True))
 else:
     def glob(pathname):
         return absolute(_iglob(loader.resolve(pathname)))
