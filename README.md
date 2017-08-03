@@ -1,6 +1,6 @@
 # [Cookpy — A Modern Build System](https://getcook.org/)
 
-:warning: **This software is currently alpha and not ready for production use.**
+:zap: **This software is currently alpha and not ready for production use.**
 
 :heart: **Contributions to this project are very welcome!**
 
