@@ -117,6 +117,7 @@ def on_fail(task, exc):
             tb = remove_traceback_noise(tb)
             print('Traceback (most recent call last):')
             print(''.join(traceback.format_list(tb)), end='')
+            print(''.join(traceback.format_exception_only(type(exc), exc)))
             print('$', exc.scommand)
         print(exc.output, end='')
     else:
@@ -124,6 +125,7 @@ def on_fail(task, exc):
         tb = remove_traceback_noise(tb)
         print('Traceback (most recent call last):')
         print(''.join(traceback.format_list(tb)), end='')
+        print(''.join(traceback.format_exception_only(type(exc), exc)), end='')
 
 
 def on_start(job, task):
@@ -205,6 +207,7 @@ def main():
         tb = remove_traceback_noise(tb)
         print('Traceback (most recent call last):')
         print(''.join(traceback.format_list(tb)), end='')
+        print(''.join(traceback.format_exception_only(type(exc), exc)), end='')
         return 2
 
     if args.results:
