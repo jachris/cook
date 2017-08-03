@@ -199,28 +199,28 @@ def main():
         on_error('Failed to load BUILD.py - see below')
         raise
 
-    if not args.results:
-        builder.start(args.jobs or jobs, request or None)
-    else:
-        import gc
+    if args.results:
+        # This is currently very hacky. Writing a json file is probably not
+        # needed. The IDE tool could just drive the system directly.
         import json
         from .core import graph
 
-        tasks = {}
-        for obj in gc.get_objects():
-            if isinstance(obj, graph.Task):
-                tasks[obj.primary] = obj.result.__dict__
+        results = {}
+        for task in graph.tasks:
+            task.calculate_primary()
+            results[task.primary] = task.result.__dict__
 
         def set_to_list(s):
             if isinstance(s, set):
                 return list(s)
             else:
                 return None
-                # raise TypeError('could not serialize {}'.format(type(s)))
 
         with open('results.json', 'w') as file:
-            json.dump(tasks, file, default=set_to_list)
-        print('results dumped')
+            json.dump(results, file, default=set_to_list)
+        return
+
+    builder.start(args.jobs or jobs, request or None)
 
     if not outdated:
         on_info('No work to do.')
