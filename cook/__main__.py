@@ -198,8 +198,13 @@ def main():
     except Exception as exc:
         on_error('Failed to load BUILD.py - see below')
         tb = traceback.extract_tb(exc.__traceback__)[2:]
-        tb = [entry for entry in tb if not (entry[0].endswith(
-            '/core/loader.py') and entry[2] == 'load' and 'exec' in entry[3])]
+        tb = [entry for entry in tb if
+              not (entry[0].endswith('/core/loader.py') and
+                   entry[2] == 'load' and
+                   'exec(' in entry[3]) and
+              not (entry[0].endswith('/core/graph.py') and
+                   entry[2] == 'spawn_task' and
+                   'next(' in entry[3])]
         print('Traceback (most recent call last):')
         print(''.join(traceback.format_list(tb)), end='')
         return 2
