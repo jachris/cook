@@ -95,7 +95,7 @@ def publish(
 
     out_files = set()
     for output in outputs:
-        if misc.is_inside(output, os.curdir):
+        if misc.is_inside(output, system.build('.')):
             file = graph.new_file(output)
             out_files.add(file)
         else:
