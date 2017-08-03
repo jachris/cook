@@ -104,8 +104,7 @@ def publish(
     if not isinstance(phony, bool):
         raise TypeError('phony must be a boolean')
 
-    stack = traceback.extract_stack()[1:-3]
-    # stack = None
+    stack = traceback.extract_stack()[:-3]
 
     return in_files, message, out_files, check, force, result, phony, stack
 

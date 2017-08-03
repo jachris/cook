@@ -108,18 +108,22 @@ def on_fail(task, exc):
 
     if verbose:
         print('Saved traceback (most recent call last):')
-        print(''.join(traceback.format_list(task.stack)))
+        tb = remove_traceback_noise(task.stack)
+        print(''.join(traceback.format_list(tb)))
+
     if hasattr(exc, 'command'):
         if verbose:
+            tb = traceback.extract_tb(exc.__traceback__)
+            tb = remove_traceback_noise(tb)
             print('Traceback (most recent call last):')
-            print(''.join(traceback.format_exception(
-                type(exc), exc, exc.__traceback__)))#[3:]))
+            print(''.join(traceback.format_list(tb)), end='')
             print('$', exc.scommand)
         print(exc.output, end='')
     else:
+        tb = traceback.extract_tb(exc.__traceback__)
+        tb = remove_traceback_noise(tb)
         print('Traceback (most recent call last):')
-        print(''.join(traceback.format_exception(
-            type(exc), exc, exc.__traceback__)), end='')  #[3:]
+        print(''.join(traceback.format_list(tb)), end='')
 
 
 def on_start(job, task):
@@ -198,13 +202,7 @@ def main():
     except Exception as exc:
         on_error('Failed to load BUILD.py - see below')
         tb = traceback.extract_tb(exc.__traceback__)[2:]
-        tb = [entry for entry in tb if
-              not (entry[0].endswith('/core/loader.py') and
-                   entry[2] == 'load' and
-                   'exec(' in entry[3]) and
-              not (entry[0].endswith('/core/graph.py') and
-                   entry[2] == 'spawn_task' and
-                   'next(' in entry[3])]
+        tb = remove_traceback_noise(tb)
         print('Traceback (most recent call last):')
         print(''.join(traceback.format_list(tb)), end='')
         return 2
@@ -239,6 +237,25 @@ def main():
     else:
         on_warning('Failed tasks: {}'.format(failed))
         return 1
+
+
+def remove_traceback_noise(tb):
+    forbidden = (
+        ('/core/loader.py', 'load', 'exec('),
+        ('/core/graph.py', 'spawn_task', 'next('),
+        ('/core/builder.py', 'run', '.execute('),
+        ('/core/graph.py', 'execute', 'next('),
+        ('', '<module>', 'load_entry_point('),
+        ('/cook/__main__.py', 'main', 'load('),
+        ('/core/misc.py', 'call', 'raise')
+    )
+
+    return [entry for entry in tb if not any(
+        entry[0].endswith(data[0]) and
+        entry[2] == data[1] and
+        data[2] in entry[3]
+        for data in forbidden
+    )]
 
 
 class HelpFormatter(argparse.HelpFormatter):
