@@ -195,9 +195,14 @@ def main():
     system.initialize(output)
     try:
         loader.load(build)
-    except Exception:
+    except Exception as exc:
         on_error('Failed to load BUILD.py - see below')
-        raise
+        tb = traceback.extract_tb(exc.__traceback__)[2:]
+        tb = [entry for entry in tb if not (entry[0].endswith(
+            '/core/loader.py') and entry[2] == 'load' and 'exec' in entry[3])]
+        print('Traceback (most recent call last):')
+        print(''.join(traceback.format_list(tb)), end='')
+        return 2
 
     if args.results:
         # This is currently very hacky. Writing a json file is probably not
