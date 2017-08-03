@@ -37,10 +37,9 @@ platform-specific details. For example, the output is either named `main` or
 $ ls
 BUILD.py  main.cpp  main.h
 $ cook
-[INFO] Evaluating build script...
-[  0%] Compile ".cookpy/intermediate/0271de2df0c16df23a49aa4b52371a04.o"                            
-[ 50%] Link "main"                                                             
-[100%] Everything should be up-to-date. 
+[  0%] Compile main.cpp
+[ 50%] Link build/main
+[100%] Done.
 $ ls build/
 main
 ```
@@ -56,9 +55,11 @@ from cookpy import core
 @core.rule
 def replace(source, destination, mapping):
     source = core.resolve(source)
+    destination = core.build(destination)
 
     yield core.publish(
         inputs=[source],
+        message='Generating {}'.format(destination),
         outputs=[destination],
         check=mapping
     )
