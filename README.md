@@ -1,9 +1,8 @@
 # [Cookpy — A Modern Build System](https://getcook.org/)
 
-⚠ **This software is currently alpha and not ready for production use. 
-Not everything mentioned below will work.**
+:warning: **This software is currently alpha and not ready for production use.**
 
-👋 **Contributions to this project are very, very welcome!**
+:heart: **Contributions to this project are very welcome!**
 
 
 ## Overview
