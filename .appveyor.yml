@@ -1,0 +1,19 @@
+image:
+  - Visual Studio 2015
+
+environment:
+  matrix:
+    - PYTHON: 'C:\Python36'
+    - PYTHON: 'C:\Python33'
+
+install:
+  - 'set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%'
+  - 'python setup.py install'
+
+build: off
+
+test_script:
+  - 'cd examples'
+  - 'cd cpp && cook -v && cd ..'
+  - 'cd cpp_warning && cook -v && cd ..'
+  - 'cd file && cook -v && cd ..'

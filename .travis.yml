@@ -1,0 +1,14 @@
+language: python
+
+python:
+  - '3.6'
+  - '3.3'
+
+install:
+  - python setup.py install
+
+script:
+  - 'cd examples'
+  - 'cd cpp && cook -v && cd ..'
+  - 'cd cpp_warning && cook -v && cd ..'
+  - 'cd file && cook -v && cd ..'

@@ -1,5 +1,8 @@
 # [Cookpy — A Modern Build System](https://getcook.org/)
 
+[![Travis](https://api.travis-ci.org/jachris/cook.svg)](https://travis-ci.org/jachris/cook)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/jachris/cook?svg=true)](https://ci.appveyor.com/project/jachris/cook)
+
 :zap: **This software is currently alpha and not ready for production use.**
 
 :heart: **Contributions to this project are very welcome!**
