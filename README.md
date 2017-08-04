@@ -1,4 +1,4 @@
-# [Cookpy — A Modern Build System](https://getcook.org/)
+# [Cook — A Modern Build System](https://getcook.org/)
 
 [![Travis](https://api.travis-ci.org/jachris/cook.svg)](https://travis-ci.org/jachris/cook)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/jachris/cook?svg=true)](https://ci.appveyor.com/project/jachris/cook)
@@ -10,7 +10,7 @@
 
 ## Overview
 
-Cookpy is an extensible, dynamic, parallel and cross-platform
+Cook is an extensible, dynamic, parallel and cross-platform
 build system. It is based on the concept that writing build definitions should
 be as powerful and easy as possible, which is why everything in Python. While 
 many other systems may be slightly faster in benchmarks, we believe that, at 
@@ -25,7 +25,7 @@ module and call the supplied rule. This is all you need to get a working build
 going. The following example will automatically work on any supported platform.
 
 ```python
-from cookpy import cpp
+from cook import cpp
 
 cpp.executable(
     sources=['main.cpp'],
@@ -54,7 +54,7 @@ until the required information is passed back to the system using
 the system decides it is necessary to do so.
 
 ```python
-from cookpy import core
+from cook import core
 
 @core.rule
 def replace(source, destination, mapping):

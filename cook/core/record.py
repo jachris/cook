@@ -10,7 +10,7 @@ def load():
     """Load serialized data if a record-file exists."""
     global data
 
-    record = build('.cookpy/record.json')
+    record = build('.cook/record.json')
     if os.path.isfile(record):
         with open(record) as file:
             data = json.load(file)
@@ -20,7 +20,7 @@ def load():
 
 def save():
     """Write the serialized data to the predefined location."""
-    with open(build('.cookpy/record.json'), 'w') as file:
+    with open(build('.cook/record.json'), 'w') as file:
         json.dump(data, file)
 
 
@@ -33,8 +33,8 @@ def clean():
         if primary not in current_primaries:
             del data[primary]
 
-    record = os.path.abspath(build('.cookpy/record.json'))
-    temporary = build('.cookpy/temporary/')
+    record = os.path.abspath(build('.cook/record.json'))
+    temporary = build('.cook/temporary/')
 
     # Build-directory cleaning should not really happen here.
     for root, directories, files in os.walk(build('.')):

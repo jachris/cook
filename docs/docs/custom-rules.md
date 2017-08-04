@@ -85,7 +85,7 @@ We will create a function with the `def` statement and use `@core.rule`, a
 so-called "decorator" to turn the normal function into a rule.
 
 ```python
-from cookpy import core
+from cook import core
 
 @core.rule
 def replace(source, destination, mapping):
@@ -138,6 +138,8 @@ everything to the output file.
 That's it. Below you can see the whole rule at once.
 
 ```python
+from cook import core
+
 @core.rule
 def replace(source, destination, mapping):
     source = core.resolve(source)

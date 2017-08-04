@@ -12,14 +12,14 @@ def initialize(destination):
     global build_dir, intermediate_dir, temporary_dir
 
     build_dir = abspath(destination)
-    cookpy = os.path.join(build_dir, '.cookpy/')
-    intermediate_dir = os.path.join(cookpy, 'intermediate/')
-    temporary_dir = os.path.join(cookpy, 'temporary/')
+    cook = os.path.join(build_dir, '.cook/')
+    intermediate_dir = os.path.join(cook, 'intermediate/')
+    temporary_dir = os.path.join(cook, 'temporary/')
 
     if not os.path.isdir(destination):
         os.makedirs(destination)
-    if not os.path.isdir(cookpy):
-        os.mkdir(cookpy)
+    if not os.path.isdir(cook):
+        os.mkdir(cook)
     if not os.path.isdir(intermediate_dir):
         os.mkdir(intermediate_dir)
     if os.path.isdir(temporary_dir):
