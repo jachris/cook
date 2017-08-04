@@ -12,3 +12,6 @@ script:
   - 'cd cpp && cook -v && cd ..'
   - 'cd cpp_warning && cook -v && cd ..'
   - 'cd file && cook -v && cd ..'
+
+notifications:
+  email: false
