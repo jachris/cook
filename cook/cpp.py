@@ -6,8 +6,8 @@ from . import core
 
 @core.rule
 def executable(
-    name, sources=None, include=None, define=None, flags=None,
-    links=None, compiler=None, warnings_are_errors=False, scan=True
+    name, sources=None, include=None, define=None, flags=None, links=None,
+    compiler=None, warnings_are_errors=False, scan=True, debug=True
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -56,6 +56,7 @@ def executable(
             compiler=compiler,
             error_warnings=warnings_are_errors,
             scan=scan,
+            debug=debug
         )
         objects.append(core.resolve(obj.output))
 
@@ -86,7 +87,8 @@ def executable(
 @core.rule
 def static_library(
     name=None, sources=None, include=None, define=None, flags=None,
-    headers=None, compiler=None, warnings_are_errors=False, scan=True
+    headers=None, compiler=None, warnings_are_errors=False, scan=True,
+    debug=True
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -109,7 +111,8 @@ def static_library(
             include=include,
             define=define,
             flags=flags,
-            error_warnings=warnings_are_errors
+            error_warnings=warnings_are_errors,
+            debug=debug
         )
         objects.append(obj.output)
 
@@ -149,7 +152,8 @@ def static_library(
 @core.rule
 def shared_library(
     name, sources, include=None, define=None, flags=None, headers=None,
-    compiler=None, warnings_are_errors=False, scan=True, msvc_lib=False
+    compiler=None, warnings_are_errors=False, scan=True, msvc_lib=False,
+    debug=True
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -179,7 +183,8 @@ def shared_library(
             include=include,
             define=define,
             flags=flags,
-            error_warnings=warnings_are_errors
+            error_warnings=warnings_are_errors,
+            debug=debug
         )
         objects.append(obj.output)
 
@@ -230,7 +235,7 @@ def shared_library(
 @core.rule
 def object(
     name=None, sources=None, include=None, define=None, flags=None,
-    compiler=None, error_warnings=False, scan=True
+    compiler=None, error_warnings=False, scan=True, debug=True
 ):
     if isinstance(sources, str):
         raise TypeError('sources must not be a string - try to use a list')
@@ -264,7 +269,7 @@ def object(
         inputs=sources + [compiler],
         message='Compile ' + ', '.join(sources),
         outputs=[name],
-        check=[include, define, flags, error_warnings, scan],
+        check=[include, define, flags, error_warnings, scan, debug],
         result={
             'type': 'cpp.object',
             'include': include,
@@ -298,8 +303,11 @@ def object(
         if error_warnings:
             command.append('-Werror')
 
-        # Generate debug information... Option to turn this off?
-        command.append('-g')
+        if debug:
+            command.append('-g')
+        else:
+            command.append('-O3')
+            command.append('-DNDEBUG')
 
         for identifier, value in define.items():
             command.append('-D{}={}'.format(identifier, value))
