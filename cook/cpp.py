@@ -1,6 +1,5 @@
 import os
 import re
-import threading
 
 from . import core
 
@@ -253,6 +252,8 @@ def object(
     if name is None:
         name = core.intermediate(core.checksum(
             core.absolute(sources), compiler)[:16])
+    else:
+        name = core.build(name)
 
     if toolchain is _GNU:
         name += '.o'
