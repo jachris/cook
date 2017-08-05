@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Decorator to `core.cache()` function results 
 - New generic rule `misc.run()`
+- Basic option enumeration by using `cook --options`
 
 ### Changed
 - Detect now all MSVC versions from 7.0 to 14.0 (2015)
