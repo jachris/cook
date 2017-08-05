@@ -213,6 +213,10 @@ def main():
         print(''.join(traceback.format_exception_only(type(exc), exc)), end='')
         return 2
 
+    remaining = {x.lower() for x in given} - {x.lower() for x in options}
+    if remaining:
+        raise ValueError('Invalid options - ' + ', '.join(remaining))
+
     if args.options:
         print('{:<10} {:<5} {:<10} {:<20}'.format(
             'name', 'type', 'default', 'help'))
