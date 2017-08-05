@@ -220,7 +220,7 @@ def main():
         for name in options:
             tp, default, help = options[name]
             print('{:<10} {:<5} {:<10} {:<20}'.format(
-                name.lower(), tp.__name__, default, help))
+                name.lower(), tp.__name__, str(default), help))
         return
 
     if args.results:
