@@ -95,11 +95,8 @@ def publish(
 
     out_files = set()
     for output in outputs:
-        if misc.is_inside(output, system.build('.')):
-            file = graph.new_file(output)
-            out_files.add(file)
-        else:
-            raise ValueError('output outside of build directory')
+        file = graph.new_file(output)
+        out_files.add(file)
 
     if not isinstance(phony, bool):
         raise TypeError('phony must be a boolean')
