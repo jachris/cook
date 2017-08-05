@@ -77,8 +77,8 @@ else:
     def on_error(msg):
         print('[\033[31mERROR\033[0m]', msg)
 
+given = {}
 options = {}
-request = set()
 started = 0
 outdated = 0
 failed = 0
@@ -93,8 +93,9 @@ def good_path(path):
 
 
 def on_option(name, type, default, help):
-    if name in options:
-        return options[name]
+    options[name] = (type, default, help)
+    if name in given:
+        return given[name]
     else:
         return default
 
@@ -164,6 +165,7 @@ def main():
     arg('-o', '--output', metavar='PATH',
         help='override build directory')
     arg('rest', nargs='*', help=argparse.SUPPRESS)
+    arg('--options', action='store_true', help='List all options')
     arg('--results', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
 
@@ -177,10 +179,11 @@ def main():
     events.on_fail = on_fail
     events.on_outdated = on_outdated
 
+    request = set()
     for entry in args.rest:
         if '=' in entry:
             key, value = entry.split('=', 1)
-            options[key.upper()] = value
+            given[key.upper()] = value
         else:
             request.add(entry)
 
@@ -209,6 +212,16 @@ def main():
         print(''.join(traceback.format_list(tb)), end='')
         print(''.join(traceback.format_exception_only(type(exc), exc)), end='')
         return 2
+
+    if args.options:
+        print('{:<10} {:<5} {:<10} {:<20}'.format(
+            'name', 'type', 'default', 'help'))
+        print('-'*50)
+        for name in options:
+            tp, default, help = options[name]
+            print('{:<10} {:<5} {:<10} {:<20}'.format(
+                name.lower(), tp.__name__, default, help))
+        return
 
     if args.results:
         # This is currently very hacky. Writing a json file is probably not
