@@ -274,6 +274,18 @@ def object(
         }
     )
 
+    for identifier, value in define.items():
+        if isinstance(value, str):
+            define[identifier] = '"{}"'.format(value)
+        elif value is True:
+            define[identifier] = 'true'
+        elif value is False:
+            define[identifier] = 'false'
+        elif isinstance(value, (int, float)):
+            pass
+        else:
+            raise TypeError('unsupported define type: {}'.format(type(value)))
+
     if toolchain is GNU:
         command = [compiler, '-c', '-o', name, '-x', 'c++', '-std=c++11']
         command.extend(sources)
@@ -289,8 +301,8 @@ def object(
         # Generate debug information... Option to turn this off?
         command.append('-g')
 
-        for name, value in define.items():
-            command.append('-D{}={}'.format(name, value))
+        for identifier, value in define.items():
+            command.append('-D{}={}'.format(identifier, value))
 
         if scan:
             depfile = core.temporary(core.random('.d'))
@@ -327,8 +339,8 @@ def object(
 
         if scan:
             command.append('/showIncludes')
-        for name, value in define.items():
-            command.append('/D{}={}'.format(name, value))
+        for identifier, value in define.items():
+            command.append('/D{}={}'.format(identifier, value))
 
         # TODO: Option to set c++ standard.
         # command.append('/std:' + standard)
