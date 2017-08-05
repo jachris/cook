@@ -35,14 +35,14 @@ def executable(
                 static.append(core.resolve(link.output))
             elif getattr(link, 'type') == 'cpp.shared_library':
                 include.extend(link.headers)
-                if toolchain is _GNU:
+                if toolchain is GNU:
                     shared.append(core.resolve(link.output))
                 else:
                     shared.append(core.resolve(link.msvc_lib))
             else:
                 raise TypeError('invalid entry in links: "{}"'.format(link))
 
-    if toolchain is _MSVC:
+    if toolchain is MSVC:
         name += '.exe'
     name = core.build(name)
 
@@ -68,7 +68,7 @@ def executable(
         }
     )
 
-    if toolchain is _GNU:
+    if toolchain is GNU:
         command = [compiler, '-o', name]
         command.extend(objects)
         command.extend(static)
@@ -77,7 +77,7 @@ def executable(
             command.append('-Wl,-rpath,' + os.path.dirname(core.absolute(s)))
         command.append('-lstdc++')
         core.call(command, env=os.environ)
-    elif toolchain is _MSVC:
+    elif toolchain is MSVC:
         command = [compiler, '/Fe' + name, '/nologo']
         command.extend(objects + shared + static)
         core.call(command, env=_msvc_get_cl_env(compiler))
@@ -119,9 +119,9 @@ def static_library(
     else:
         name = core.build(name)
 
-    if toolchain is _MSVC:
+    if toolchain is MSVC:
         name += '.lib'
-    elif toolchain is _GNU:
+    elif toolchain is GNU:
         name += '.a'
 
     yield core.publish(
@@ -134,12 +134,12 @@ def static_library(
         }
     )
 
-    if toolchain is _GNU:
+    if toolchain is GNU:
         archiver = core.which('ar')
         command = [archiver, 'rs', name]
         command.extend(objects)
         core.call(command)
-    elif toolchain is _MSVC:
+    elif toolchain is MSVC:
         archiver = os.path.join(os.path.dirname(compiler), 'lib.exe')
         command = [archiver, '/OUT:' + name]
         command.extend(objects)
@@ -163,7 +163,7 @@ def shared_library(
 
     if flags is None:
         flags = []
-    if toolchain is _GNU:
+    if toolchain is GNU:
         flags.append('-fPIC')
 
     if define is None:
@@ -183,7 +183,7 @@ def shared_library(
         )
         objects.append(obj.output)
 
-    if toolchain is _MSVC:
+    if toolchain is MSVC:
         lib = name + '.lib'
         if msvc_lib:
             lib = core.build(lib)
@@ -207,12 +207,12 @@ def shared_library(
         },
     )
 
-    if toolchain is _GNU:
+    if toolchain is GNU:
         command = [compiler, '-shared', '-o', name]
         command.extend(objects)
         command.append('-Wl,-soname,' + os.path.basename(name))
         core.call(command, env=os.environ)
-    elif toolchain is _MSVC:
+    elif toolchain is MSVC:
         command = [compiler, '/Fe' + name, '/nologo', '/LD']
         command.extend(objects)
         core.call(command, env=_msvc_get_cl_env(compiler))
@@ -255,9 +255,9 @@ def object(
     else:
         name = core.build(name)
 
-    if toolchain is _GNU:
+    if toolchain is GNU:
         name += '.o'
-    elif toolchain is _MSVC:
+    elif toolchain is MSVC:
         name += '.obj'
 
     yield core.publish(
@@ -274,7 +274,7 @@ def object(
         }
     )
 
-    if toolchain is _GNU:
+    if toolchain is GNU:
         command = [compiler, '-c', '-o', name, '-x', 'c++', '-std=c++11']
         command.extend(sources)
 
@@ -319,7 +319,7 @@ def object(
 
         yield core.deposit(inputs=used, warnings=output or None)
 
-    elif toolchain is _MSVC:
+    elif toolchain is MSVC:
         command = [compiler, '/c', '/Fo' + name, '/nologo']
         command.extend(sources)
         for directory in include:
@@ -379,8 +379,12 @@ def find_shared_library(name):
     return _find('lib{}.so'.format(name))
 
 
-_GNU = 'GNU'
-_MSVC = 'MSVC'
+def get_default_toolchain():
+    return _get_default_compiler()[1]
+
+
+GNU = 'GNU'
+MSVC = 'MSVC'
 
 
 def _find(name):
@@ -433,11 +437,11 @@ def _get_toolchain(compiler):
     if compiler is None:
         return None
     if 'g++' in compiler:
-        return _GNU
+        return GNU
     if 'clang' in compiler:
-        return _GNU
+        return GNU
     if 'cl.exe' in compiler:
-        return _MSVC
+        return MSVC
 
 
 @core.cache
