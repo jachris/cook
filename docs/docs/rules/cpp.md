@@ -4,6 +4,10 @@ title: C++ Rules
 ---
 
 # C++ Rules
+{:.no_toc}
+
+* TOC
+{:toc}
 
 ## Executable
 

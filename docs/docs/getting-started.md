@@ -4,21 +4,33 @@ title: Getting Started
 ---
 
 # Getting Started
+{:.no_toc}
 
-Instructions for installation are available [here](/installation/).
-Make sure that you have Cook installed for the following steps.
+* TOC
+{:toc}
+
+
+## Installation
+
+Instructions for installation are available 
+[here]({% link docs/installation.md %}). Make sure that you have Cook installed 
+for the following steps.
 
 ```
 $ cook --help
 Usage: cook <args> [target] [option=value] ...
 
 Arguments:
-  -h, --help         show this help message and exit
-  -b, --build PATH   location of BUILD.py
-  -j, --jobs INT     number of jobs (default: 5)
-  -v, --verbose      enable debug mode
-  -o, --output PATH  override build directory
+  -h, --help         Show this help message and exit
+  -b, --build PATH   Location of BUILD.py
+  -j, --jobs INT     Number of jobs (default: 5)
+  -v, --verbose      Enable debug mode
+  -o, --output PATH  Override build directory
+  --options          List all options and exit
+  --targets          List all targets and exit
 ```
+
+## Setup
 
 Let's create a new C++ project using Cook.
 
@@ -52,6 +64,8 @@ cpp.executable(
 EOF
 ```
 
+## Result
+
 You should be able to build the program and execute it.
 
 ```
@@ -63,3 +77,11 @@ $ cook
 $ ./build/hello
 Hello world!
 ```
+
+## Next Steps
+
+If you are interested in creating custom rules, make sure to visit
+[the tutorial]({% link docs/getting-started.md %}). You can find more 
+information about the C++ rules [here]({% link docs/rules/cpp.md %}) or maybe
+take a look at the [features]({% link docs/features/index.md %}) provided by
+Cook and the [other rules]({% link docs/rules/index.md %})?

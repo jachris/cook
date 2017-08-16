@@ -1,29 +1,20 @@
 ---
 layout: docs
-title: API Reference
+title: Core Reference
 ---
 
-# API Reference
+# Core Reference
+{:.no_toc}
+
+* TOC
+{:toc}
+
 
 The whole API is available inside the `core` subpackage.
 
 ```python
 from cook import core
 ```
-
-
-## core.**<debug|info|warning|error>()**
-
-```python
-core.debug(*objects, sep=' ')
-core.info(*objects, sep=' ')
-core.warning(*objects, sep=' ')
-core.error(*objects, sep=' ')
-```
-
-Emit a log entry on the given level. The `objects` will be transformed to 
-`str` and then joined by the separator given by `sep`.
-
 
 ## core.**absolute()**
 
@@ -100,6 +91,19 @@ and datetime objects and is sometimes even slower. This can be useful if you
 want to provide an anonymous version of rules to give outputs a name depending
 on other inputs. It is also used internally to process the `check` argument of
 `core.publish()`.
+
+
+## core.**debug|info|warning|error()**
+
+```python
+core.debug(*objects, sep=' ')
+core.info(*objects, sep=' ')
+core.warning(*objects, sep=' ')
+core.error(*objects, sep=' ')
+```
+
+Emit a log entry on the given level. The `objects` will be transformed to 
+`str` and then joined by the separator given by `sep`.
 
 
 ## core.**default()**
@@ -256,23 +260,12 @@ the given `suffix`.
 ## core.**relative()**
 
 ```python
-core.
+core.relative(path_or_paths)
 ```
 
 Same `path_or_paths` interpretation as in `core.absolute()`. All paths will be
 transformed to relative ones according to the directory where Cook is executed.
-This is not the same as `core.resolve()`.
-
-
-## core.**resolve()**
-
-```python
-core.
-```
-
-Same `path_or_paths` interpretation as in `core.absolute()`. All paths will be
-interpreted relatively to the currently loaded script. This is not the same as
-`core.relative()`.
+This is not the same as `core.source()`.
 
 
 ## core.**rule()**
@@ -282,6 +275,17 @@ core.rule(func)
 ```
 
 Transform the given `func` to a rule. This should be used as a decorator.
+
+
+## core.**source()**
+
+```python
+core.source(path_or_paths)
+```
+
+Same `path_or_paths` interpretation as in `core.absolute()`. All paths will be
+interpreted relatively to the currently loaded script. This is not the same as
+`core.relative()`.
 
 
 ## core.**task()**

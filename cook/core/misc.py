@@ -119,11 +119,11 @@ def which(file, env=os.environ):
 if sys.version_info >= (3, 5):
     def glob(pathname):
         return absolute(filter(os.path.isfile, _glob.iglob(
-            loader.resolve(pathname), recursive=True)))
+            loader.source(pathname), recursive=True)))
 else:
     def glob(pathname):
         return absolute(filter(os.path.isfile, _iglob(
-            loader.resolve(pathname))))
+            loader.source(pathname))))
 
     def _iglob(pathname):
         """Return an iterator which yields the paths matching a pathname pattern.

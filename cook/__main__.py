@@ -146,7 +146,8 @@ def main():
 
     parser = argparse.ArgumentParser(
         usage='%(prog)s <args> [target] [option=value] ...',
-        formatter_class=HelpFormatter
+        formatter_class=HelpFormatter,
+        add_help=False
     )
     parser._optionals.title = 'Arguments'
 
@@ -156,16 +157,18 @@ def main():
         jobs = 6
 
     arg = parser.add_argument
+    arg('-h', '--help', action='help', help='Show this help message and exit')
     arg('-b', '--build', metavar='PATH', default='.',
-        help='location of BUILD.py')
+        help='Location of BUILD.py')
     arg('-j', '--jobs', type=int, metavar='INT',
-        help='number of jobs (default: {})'.format(
+        help='Number of jobs (default: {})'.format(
             jobs))
-    arg('-v', '--verbose', action='store_true', help='enable debug mode')
+    arg('-v', '--verbose', action='store_true', help='Enable debug mode')
     arg('-o', '--output', metavar='PATH',
-        help='override build directory')
+        help='Override build directory')
     arg('rest', nargs='*', help=argparse.SUPPRESS)
-    arg('--options', action='store_true', help='List all options')
+    arg('--options', action='store_true', help='List all options and exit')
+    arg('--targets', action='store_true', help='List all targets and exit')
     arg('--results', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
 
@@ -225,6 +228,19 @@ def main():
             tp, default, help = options[name]
             print('{:<10} {:<5} {:<10} {:<20}'.format(
                 name.lower(), tp.__name__, str(default), help))
+        return
+
+    if args.targets:
+        from .core import graph
+        ignore = os.sep + '.cook' + os.sep
+        targets = []
+        for task in graph.tasks:
+            for output in task.outputs:
+                if ignore not in output.path:
+                    targets.append(os.path.relpath(output.path))
+        targets.sort()
+        for target in targets:
+            print(target)
         return
 
     if args.results:
@@ -302,4 +318,5 @@ class HelpFormatter(argparse.HelpFormatter):
 
 
 if __name__ == '__main__':
+    # TODO: Exit gracefully?
     sys.exit(main() or 0)

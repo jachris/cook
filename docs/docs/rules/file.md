@@ -4,6 +4,10 @@ title: File Rules
 ---
 
 # File Rules
+{:.no_toc}
+
+* TOC
+{:toc}
 
 ## Copy
 

@@ -14,7 +14,7 @@ executing = set()
 directories = ['.']
 
 
-def resolve(path_or_paths):
+def source(path_or_paths):
     """Interpret given paths relative to the current script directory.
 
     If 'path_or_paths' is a single string, the resolved path is
@@ -42,7 +42,7 @@ def load(path):
 
     A RuntimeError will be raised if a cycle is detected.
     """
-    path = abspath(resolve(path))
+    path = abspath(source(path))
     if isdir(path):
         directory = path
         path = join(directory, 'BUILD.py')

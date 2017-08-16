@@ -3,7 +3,7 @@ from cook import core
 
 @core.rule
 def run(command, outputs, inputs=None, message=None, env=None):
-    inputs = core.resolve(inputs or [])
+    inputs = core.source(inputs or [])
     outputs = core.build(outputs)
     command[0] = core.which(command[0])
 

@@ -4,6 +4,10 @@ title: GIMP Rules
 ---
 
 # GIMP Rules
+{:.no_toc}
+
+* TOC
+{:toc}
 
 ## Export XCF
 

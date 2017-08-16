@@ -4,6 +4,10 @@ title: LaTeX Rules
 ---
 
 # LaTeX Rules
+{:.no_toc}
+
+* TOC
+{:toc}
 
 ## Render PDF
 

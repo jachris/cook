@@ -16,7 +16,7 @@ def document(
     if contains is None:
         contains = []
 
-    source = core.resolve(source)
+    source = core.source(source)
 
     inputs = [source]
     inputs.extend(contains)
@@ -30,7 +30,7 @@ def document(
     env = {}
 
     if texinputs is not None:
-        texinputs = core.resolve(texinputs)
+        texinputs = core.source(texinputs)
         env['TEXINPUTS'] = '.:{}::'.format(os.pathsep.join(
             texinput for texinput in texinputs)
         )

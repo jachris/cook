@@ -4,6 +4,12 @@ title: LibreOffice Rules
 ---
 
 # LibreOffice Rules
+{:.no_toc}
+
+* TOC
+{:toc}
+
+## Convert
 
 ```python
 libreoffice.convert(

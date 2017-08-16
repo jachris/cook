@@ -2,7 +2,7 @@ import os
 import queue
 import threading
 
-from . import graph, events, record, log
+from . import graph, events, record, log, system
 
 defaults = set()
 todo = queue.Queue()
@@ -24,8 +24,12 @@ def start(jobs, request=None):
         for path in map(os.path.realpath, request):
             if graph.has_file(path):
                 requested.add(graph.get_file(path))
-            else:
-                raise ValueError('Can not find target "{}"'.format(path))
+                continue
+            path = os.path.abspath(system.build(os.path.relpath(path)))
+            if graph.has_file(path):
+                requested.add(graph.get_file(path))
+                continue
+            raise ValueError('Can not find target "{}"'.format(path))
     elif defaults:
         requested = set()
         for task in defaults:

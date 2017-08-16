@@ -2,11 +2,16 @@
 <html lang="en-US">
 {% include head.html %}
 <body>
-    {% include header.html subtitle="A Modern Build-System" %}
+    {% include header.html %}
     <main>
-        {% include gen-nav.html entries=site.data.docs %}
-        <hr>
-        {{ content }}
+        <div class="content">
+            <div class="docs-nav">
+                {% include gen-nav.html entries=site.data.docs %}
+            </div>
+            <div class="docs-content">
+                {{ content }}
+            </div>
+        </div>
     </main>
     {% include footer.html %}
 </body>

@@ -20,7 +20,7 @@ def export(source, destination=None, format='png'):
     if _gimp is None:
         raise FileNotFoundError('could not detect gimp')
 
-    source = core.resolve(source)
+    source = core.source(source)
 
     if destination is None:
         name = core.checksum(source) + '.' + format

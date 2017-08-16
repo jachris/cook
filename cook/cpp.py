@@ -7,7 +7,8 @@ from . import core
 @core.rule
 def executable(
     name, sources=None, include=None, define=None, flags=None, links=None,
-    compiler=None, warnings_are_errors=False, scan=True, debug=True
+    compiler=None, warnings_are_errors=False, scan=True, debug=True,
+    objects=None
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -19,6 +20,7 @@ def executable(
     include = list(include) if include else []
     define = dict(define) if define else {}
     flags = list(flags) if flags else []
+    objects = list(objects) if objects else []
 
     static = []
     shared = []
@@ -32,13 +34,13 @@ def executable(
                 static.append(lib)
             elif getattr(link, 'type') == 'cpp.static_library':
                 include.extend(link.headers)
-                static.append(core.resolve(link.output))
+                static.append(core.source(link.output))
             elif getattr(link, 'type') == 'cpp.shared_library':
                 include.extend(link.headers)
                 if toolchain is GNU:
-                    shared.append(core.resolve(link.output))
+                    shared.append(core.source(link.output))
                 else:
-                    shared.append(core.resolve(link.msvc_lib))
+                    shared.append(core.source(link.msvc_lib))
             else:
                 raise TypeError('invalid entry in links: "{}"'.format(link))
 
@@ -46,7 +48,6 @@ def executable(
         name += '.exe'
     name = core.build(name)
 
-    objects = []
     for source in sources:
         obj = object(
             sources=[source],
@@ -58,7 +59,7 @@ def executable(
             scan=scan,
             debug=debug
         )
-        objects.append(core.resolve(obj.output))
+        objects.append(core.source(obj.output))
 
     yield core.publish(
         inputs=objects + static + shared,
@@ -88,7 +89,7 @@ def executable(
 def static_library(
     name=None, sources=None, include=None, define=None, flags=None,
     headers=None, compiler=None, warnings_are_errors=False, scan=True,
-    debug=True
+    debug=True, objects=None
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -101,8 +102,9 @@ def static_library(
         headers = []
     if sources is None:
         sources = []
+    if objects is None:
+        objects = []
 
-    objects = []
     for source in sources:
         obj = object(
             sources=[source],
@@ -133,7 +135,7 @@ def static_library(
         outputs=[name],
         result={
             'type': 'cpp.static_library',
-            'headers': core.absolute(core.resolve(headers))
+            'headers': core.absolute(core.source(headers))
         }
     )
 
@@ -207,7 +209,7 @@ def shared_library(
         result={
             'type': 'cpp.shared_library',
             'msvc_lib': core.absolute(lib),
-            'headers': core.absolute(core.resolve(headers)),
+            'headers': core.absolute(core.source(headers)),
             'output': core.absolute(name)
         },
     )
@@ -235,17 +237,18 @@ def shared_library(
 @core.rule
 def object(
     name=None, sources=None, include=None, define=None, flags=None,
-    compiler=None, error_warnings=False, scan=True, debug=True
+    compiler=None, error_warnings=False, scan=True, debug=True, depend=None
 ):
     if isinstance(sources, str):
         raise TypeError('sources must not be a string - try to use a list')
     if not sources:
         raise ValueError('sources must not be empty')
 
-    sources = core.resolve(sources)
+    sources = core.source(sources)
     include = list(include) if include else []
     define = dict(define) if define else {}
     flags = list(flags) if flags else []
+    depend = list(depend) if depend else []
 
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -266,7 +269,7 @@ def object(
         name += '.obj'
 
     yield core.publish(
-        inputs=sources + [compiler],
+        inputs=sources + [compiler] + depend,
         message='Compile ' + ', '.join(sources),
         outputs=[name],
         check=[include, define, flags, error_warnings, scan, debug],
@@ -333,7 +336,9 @@ def object(
                 os.path.abspath(x) for x in
                 content[content.find(':')+1:].replace('\\\n', '\n').split()
             }
-            used.difference_update(sources)  # TODO: No difference?
+            # TODO: No difference!!
+            used.difference_update(core.absolute(sources))
+            used.difference_update(core.absolute(depend))
         else:
             used = None
 
@@ -482,9 +487,13 @@ def _msvc_get_cl_env(cl):
     cmd = core.which('cmd.exe')
     output = core.call([cmd, '/C', helper], env=os.environ)
     env = os.environ.copy()
-    for line in output.strip().splitlines():
-        key, value = line.split('=', maxsplit=1)
-        env[key] = value[:-1]
+    try:
+        for line in output.strip().splitlines():
+            key, value = line.split('=', maxsplit=1)
+            env[key] = value[:-1]
+    except ValueError:
+        raise RuntimeError('Autoconfiguration failed:\n{}'
+                           .format(output.strip())) from None
     return env
 
 

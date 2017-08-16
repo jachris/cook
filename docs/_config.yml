@@ -13,20 +13,19 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: Cook
-email: your-email@example.com
-description: Cook is a modern build system.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
+# title: Cook
+# email: your-email@example.com
 
-# Build settings
-markdown: kramdown
+
+# Cause a build to fail if there is a YAML syntax error in a page's front matter.
+strict_front_matter: true
+
+# Make links look like example.org/test/ for a file named test.md
+permalink: pretty
+
 plugins:
-  - jekyll-feed
-
-show_downloads: true
+  - jekyll-sitemap
+  - jekyll-redirect-from
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -39,8 +38,3 @@ show_downloads: true
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
-
-# Cause a build to fail if there is a YAML syntax error in a page's front matter.
-strict_front_matter: true
-
-permalink: pretty

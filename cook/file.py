@@ -1,5 +1,4 @@
 import hashlib
-import os
 from urllib.request import urlopen
 
 from . import core
@@ -7,7 +6,7 @@ from . import core
 
 @core.rule
 def copy(input, output):
-    input = core.resolve(input)
+    input = core.source(input)
     output = core.build(output)
 
     yield core.publish(
@@ -25,7 +24,7 @@ def copy(input, output):
 def template(
     source, mapping, destination=None, left='###', right='###'
 ):
-    source = core.resolve(source)
+    source = core.source(source)
 
     if destination is None:
         name = core.checksum(source, mapping, left, right)

@@ -10,7 +10,7 @@ def convert(source, destination=None, format=None):
     if _soffice is None:
         raise FileNotFoundError('libreoffice (soffice) was not found')
 
-    source = core.resolve(source)
+    source = core.source(source)
 
     if format is None and destination is None:
         raise ValueError

@@ -1,6 +1,11 @@
 // Breakpoints
-$large-breakpoint: 1200px !default;
-$medium-breakpoint: 950px !default;
+$large-breakpoint: 1100px !default;
+$medium-breakpoint: 820px !default;
+$small-breakpoint: 550px !default;
+
+//$primary: #3782c0;
+$primary: #336cbf;
+//$primary: #4f7bc0;
 
 // Headers
 $header-heading-color: #fff !default;
@@ -15,7 +20,7 @@ $blockquote-text-color: #819198 !default;
 
 // Code
 $code-bg-color: #f3f6fa !default;
-$code-text-color: #567482 !default;
+$code-text-color: #333333 !default;
 
 // Borders
 $border-color: #dce6f0 !default;

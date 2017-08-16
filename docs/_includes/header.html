@@ -1,25 +1,29 @@
 <header>
     <nav class="page-header">
-        <div class="container">
+        <div class="content">
             <div class="nav-logo-container">
                 <a class="nav-logo" href="/">
                     <img src="/img/logo.svg" style="height: 100%;">
                 </a>
             </div>
-            <select class="toggle-nav" onchange="window.location.href=this.value">
-                <option disabled selected style="display: none;">Navigation ...</option>
-                {% include gen-select-nav.html entries=site.data.header %}
-            </select>
+            <button class="nav-toggle" onclick="var e = document.getElementById('nav-dropdown'); e.className = e.className === 'hide' ? 'show' : 'hide'">
+                ☰
+            </button>
+            <div id="nav-dropdown" class="hide">
+                {% include gen-nav.html entries=site.data.nav %}
+                <input onkeydown="if (event.keyCode == 13) { window.location = '/search/?' + this.value }" id="search-input">
+            </div>
             <div class="nav-entries">
-                {% include gen-nav.html entries=site.data.header %}
+                {% include gen-nav.html entries=site.data.nav %}
+                <input onkeydown="if (event.keyCode == 13) { window.location = '/search/?' + this.value }" id="search-input"{% if page.url == '/search/' %} autofocus{% endif %}>
             </div>
         </div>
     </nav>
-    {% if include.subtitle %}
+    <!--{% if include.subtitle %}
     <div class="subheader">
-        <div class="container">
+        <div class="content">
             <span class="subheader-name">{{ include.subtitle }}</span>
         </div>
     </div>
-    {% endif %}
+    {% endif %}-->
 </header>

@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from os.path import normpath, relpath, join, abspath, isdir, isfile, dirname
+from os.path import normpath, relpath, join, abspath
 
 build_dir = None
 intermediate_dir = None

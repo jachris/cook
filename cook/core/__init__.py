@@ -1,5 +1,5 @@
 from .builder import default
-from .loader import load, resolve
+from .loader import load, source
 from .log import debug, info, warning, error
 from .misc import (
     glob, which, linux, mac, windows, checksum, absolute, relative, call,

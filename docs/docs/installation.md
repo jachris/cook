@@ -1,12 +1,11 @@
 ---
-layout: default
+layout: docs
 title: Install
 ---
 
 # Installation
 
-Cook is currently only available on GitHub. You need `Git` and `Python 3`. The
-installation process will be improved soon.
+Cook is currently only available on GitHub. You need `Git` and `Python 3`.
 
 ## Unix
 
