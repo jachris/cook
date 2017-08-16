@@ -9,7 +9,7 @@ from .core import system, loader, events, builder
 from .core.misc import is_inside, relative
 
 windows = platform.system() == 'Windows'
-lock = threading.Lock()
+lock = threading.RLock()
 
 if windows:
     import ctypes
@@ -104,29 +104,31 @@ def on_fail(task, exc):
     global failed
     failed += 1
 
-    on_error('Failed task: {}'.format(', '.join(
-        good_path(file.path) for file in task.outputs)))
+    with lock:
+        on_error('Failed task: {}'.format(', '.join(
+            good_path(file.path) for file in task.outputs)))
 
-    if verbose:
-        print('Saved traceback (most recent call last):')
-        tb = remove_traceback_noise(task.stack)
-        print(''.join(traceback.format_list(tb)))
-
-    if hasattr(exc, 'command'):
         if verbose:
+            print('Saved traceback (most recent call last):')
+            tb = remove_traceback_noise(task.stack)
+            print(''.join(traceback.format_list(tb)))
+
+        if hasattr(exc, 'command'):
+            if verbose:
+                tb = traceback.extract_tb(exc.__traceback__)
+                tb = remove_traceback_noise(tb)
+                print('Traceback (most recent call last):')
+                print(''.join(traceback.format_list(tb)), end='')
+                print(''.join(traceback.format_exception_only(type(exc), exc)))
+                print('$', exc.scommand)
+            print(exc.output, end='')
+        else:
             tb = traceback.extract_tb(exc.__traceback__)
             tb = remove_traceback_noise(tb)
             print('Traceback (most recent call last):')
             print(''.join(traceback.format_list(tb)), end='')
-            print(''.join(traceback.format_exception_only(type(exc), exc)))
-            print('$', exc.scommand)
-        print(exc.output, end='')
-    else:
-        tb = traceback.extract_tb(exc.__traceback__)
-        tb = remove_traceback_noise(tb)
-        print('Traceback (most recent call last):')
-        print(''.join(traceback.format_list(tb)), end='')
-        print(''.join(traceback.format_exception_only(type(exc), exc)), end='')
+            print(''.join(traceback.format_exception_only(
+                type(exc), exc)), end='')
 
 
 def on_start(job, task):
