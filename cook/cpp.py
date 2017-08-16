@@ -148,7 +148,7 @@ def static_library(
         archiver = os.path.join(os.path.dirname(compiler), 'lib.exe')
         command = [archiver, '/OUT:' + name]
         command.extend(objects)
-        core.call(command)
+        core.call(command, env=_msvc_get_cl_env(compiler))
 
 
 @core.rule
@@ -458,6 +458,7 @@ def _get_default_compiler():
     return compiler, toolchain
 
 
+@core.cache
 def _get_toolchain(compiler):
     if compiler is None:
         return None
@@ -474,30 +475,51 @@ def _msvc_get_cl_env(cl):
     core.debug('Extracting environment for {}'.format(cl))
     bat = os.path.normpath(
         os.path.join(os.path.dirname(cl), '../vcvarsall.bat'))
-    if not os.path.isfile(bat):
-        return None
+    if os.path.isfile(bat):
+        return _msvc_extract_vcvars(bat)
+    bat = os.path.normpath(os.path.join(
+        os.path.dirname(cl),
+        '../../../../../../Auxiliary/Build/vcvarsall.bat')
+    )
+    if os.path.isfile(bat):
+        return _msvc_extract_vcvars(bat)
+    raise ValueError('could not extract env')
+
+
+@core.cache
+def _msvc_extract_vcvars(vcvars):
     helper = core.temporary(core.random('.bat'))
     with open(helper, 'w') as stream:
         stream.write('\n'.join([
-            '@call "{bat}" {mode}',
+            '@call "{vcvars}" {mode}',
             '@echo PATH=%PATH%',
             '@echo INCLUDE=%INCLUDE%',
             '@echo LIB=%LIB%;%LIBPATH%'
-        ]).format(bat=bat, mode='x86'))
+        ]).format(vcvars=vcvars, mode='x86'))
     cmd = core.which('cmd.exe')
     output = core.call([cmd, '/C', helper], env=os.environ)
     env = os.environ.copy()
-    try:
-        for line in output.strip().splitlines():
+    steps = 0
+    for line in output.strip().splitlines():
+        if any(line.startswith(var) for var in ('PATH=', 'INCLUDE=', 'LIB=')):
             key, value = line.split('=', maxsplit=1)
             env[key] = value[:-1]
-    except ValueError:
-        raise RuntimeError('Autoconfiguration failed:\n{}'
-                           .format(output.strip())) from None
+            steps += 1
+    if steps != 3:
+        raise RuntimeError('msvc auto configuration failed: {}' + output)
     return env
 
 
 def _msvc_find_cl():
+    x = (r'C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC'
+         r'\Auxiliary\Build\vcvarsall.bat')
+    if os.path.isfile(x):
+        env = _msvc_extract_vcvars(x)
+        cl = core.which('cl.exe', env=env)
+        if cl is None:
+            raise FileNotFoundError('expected to find cl')
+        return cl
+
     for version in [140, 120, 110, 100, 90, 80, 71, 70]:
         tools = os.environ.get('VS{}COMNTOOLS'.format(version))
         if not tools:
