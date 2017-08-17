@@ -14,11 +14,11 @@ with open(path) as file:
 
 setuptools.setup(
     name='cook',
-    version='0.1.0',
+    version=version,
     description='desc',
     long_description='long_desc',
     url='https://getcook.org/',
-    author='koehlja',
+    author='jachris',
     packages=['cook', 'cook.core'],
     entry_points={
         'console_scripts': ['cook = cook.__main__:main']
