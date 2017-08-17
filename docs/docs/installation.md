@@ -4,21 +4,40 @@ title: Install
 ---
 
 # Installation
+{:.no_toc}
 
-Cook is currently only available on GitHub. You need `Git` and `Python 3`.
+Before using Cook, please note that it should not be considered stable and it
+is not ready for production use.
 
-## Unix
+* TOC
+{:toc}
+
+
+## Users
+
+You can install Cook using `pip3`.
 
 ```bash
-$ git clone https://github.com/jachris/cook 
-$ cd cook 
-$ ./setup.py develop
-```
+pip3 install https://github.com/jachris/cook/archive/master.zip
+````
 
-## Windows
+If you want to update to the newest version, run
 
 ```bash
-$ git clone https://github.com/jachris/cook 
-$ cd cook 
-$ py setup.py develop
+pip3 install https://github.com/jachris/cook/archive/master.zip --upgrade
+````
+
+
+## Contributors
+
+You will need `git` and `Python3`.
+
+```bash
+$ git clone https://github.com/jachris/cook
+$ cd cook
+$ ./setup.py develop   # If you are using Unix, OR
+$ py setup.py develop  # If you are using Windows
 ```
+
+If you want to update to the newest version you just have to `git pull` since
+you have installed Cook using the `develop` mode.
