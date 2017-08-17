@@ -58,7 +58,7 @@ from cook import core
 
 @core.rule
 def replace(source, destination, mapping):
-    source = core.resolve(source)
+    source = core.source(source)
     destination = core.build(destination)
 
     yield core.publish(
