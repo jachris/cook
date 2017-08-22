@@ -253,6 +253,17 @@ p {
   display: inline-block;
 }
 
+.editor-button {
+  width: 8px;
+  height: 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: -2px;
+  margin-bottom: 2px;
+}
+
 .editor-content pre {
   background-color: #eeeeee;
   border: solid $primary;
