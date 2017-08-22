@@ -237,9 +237,9 @@ def main():
         ignore = os.sep + '.cook' + os.sep
         targets = []
         for task in graph.tasks:
-            for output in task.outputs:
-                if ignore not in output.path:
-                    targets.append(os.path.relpath(output.path))
+            for file in task.outputs:
+                if ignore not in file.path:
+                    targets.append(os.path.relpath(file.path, output))
         targets.sort()
         for target in targets:
             print(target)
