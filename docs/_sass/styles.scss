@@ -573,6 +573,7 @@ a {
 main {
   word-wrap: break-word;
   min-height: 100%;
+  overflow: hidden;
 
   //:first-child {
   //  margin-top: 0;
