@@ -76,4 +76,5 @@ def replace(source, destination, mapping):
         file.write(content)
 ```
 
-Please look at the documentation if you want to know more.
+Please look at [the documentation](https://getcook.org/docs/) if you want to
+know more.
