@@ -397,11 +397,17 @@ def object(
 
 
 def find_static_library(name):
-    return _find('lib{}.a'.format(name))
+    if core.windows:
+        return _find('{}.lib'.format(name))
+    else:
+        return _find('lib{}.a'.format(name))
 
 
 def find_shared_library(name):
-    return _find('lib{}.so'.format(name))
+    if core.windows:
+        return _find('{}.dll'.format(name))
+    else:
+        return _find('lib{}.so'.format(name))
 
 
 def get_default_toolchain():
@@ -413,24 +419,31 @@ MSVC = 'MSVC'
 
 
 def _find(name):
-    architectures = ['x86_64-linux-gnu', 'i386-linux-gnu']
-    env_path = os.environ.get('PATH', '').split(os.pathsep)
-    for directory in env_path:
-        if directory.endswith('bin') or directory.endswith('sbin'):
-            directory = os.path.normpath(os.path.dirname(directory))
-        for arch in architectures:
-            path = os.path.join(directory, 'lib', arch, name)
+    if core.windows:
+        env = _msvc_get_cl_env(_get_default_compiler()[0])
+        for directory in env['LIB'].split(os.pathsep):
+            path = os.path.join(directory, name)
             if os.path.isfile(path):
                 return path
-            path = os.path.join(directory, arch, name)
+    else:
+        architectures = ['x86_64-linux-gnu', 'i386-linux-gnu']
+        env_path = os.environ.get('PATH', '').split(os.pathsep)
+        for directory in env_path:
+            if directory.endswith('bin') or directory.endswith('sbin'):
+                directory = os.path.normpath(os.path.dirname(directory))
+            for arch in architectures:
+                path = os.path.join(directory, 'lib', arch, name)
+                if os.path.isfile(path):
+                    return path
+                path = os.path.join(directory, arch, name)
+                if os.path.isfile(path):
+                    return path
+            path = os.path.join(directory, 'lib', name)
             if os.path.isfile(path):
                 return path
-        path = os.path.join(directory, 'lib', name)
-        if os.path.isfile(path):
-            return path
-        path = os.path.join(directory, name)
-        if os.path.isfile(path):
-            return path
+            path = os.path.join(directory, name)
+            if os.path.isfile(path):
+                return path
 
 
 @core.cache
@@ -472,7 +485,6 @@ def _get_toolchain(compiler):
 
 @core.cache
 def _msvc_get_cl_env(cl):
-    core.debug('Extracting environment for {}'.format(cl))
     bat = os.path.normpath(
         os.path.join(os.path.dirname(cl), '../vcvarsall.bat'))
     if os.path.isfile(bat):
@@ -488,6 +500,7 @@ def _msvc_get_cl_env(cl):
 
 @core.cache
 def _msvc_extract_vcvars(vcvars):
+    core.debug('Extracting environment of {}'.format(vcvars))
     helper = core.temporary(core.random('.bat'))
     with open(helper, 'w') as stream:
         stream.write('\n'.join([
