@@ -28,6 +28,18 @@
 
 //
 
+.description {
+  margin-top: 40px;
+}
+
+.description > p {
+  margin: 0;
+
+  @include tiny {
+    display: inline;
+  }
+}
+
 html {
   overflow-y: scroll;
   height: 100%;
