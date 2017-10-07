@@ -21,7 +21,7 @@
 strict_front_matter: true
 
 # Make links look like example.org/test/ for a file named test.md
-permalink: pretty
+permalink: /blog/:title/
 
 plugins:
   - jekyll-sitemap

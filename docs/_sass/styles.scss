@@ -327,7 +327,13 @@ nav > ul {
 
       a {
         color: #fff;
-        margin: 16px;
+        margin: 16px 8px;
+      }
+
+      @include large() {
+        a {
+          margin: 16px 16px;
+        }
       }
     }
 
@@ -364,6 +370,20 @@ nav > ul {
   }
 }
 
+.post-date {
+  color: #888888;
+}
+
+h1 + .post-date {
+  margin-top: -16px;
+  margin-bottom: 16px;
+}
+
+h2 + .post-date {
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
 #search-input {
   display: inline-block;
   background-image: url("/img/search.svg");
@@ -379,7 +399,17 @@ nav > ul {
   border-radius: 23px;
   width: 200px;
   transition: border-color 0.15s, box-shadow 0.15s;
-  margin-left: 16px;
+
+  @include large() {
+    width: 300px;
+  }
+
+  @include small() {
+    width: 100%;
+  }
+  @include tiny() {
+    width: 100%;
+  }
 }
 
 #markdown-toc {
@@ -424,9 +454,9 @@ nav > ul {
     }
   }
 
-  #search-input {
-    margin: 5px 0 10px 16px;
-  }
+  //#search-input {
+  //  margin: 5px 0 10px 16px;
+  //}
 }
 
 #nav-dropdown.show {
@@ -659,6 +689,14 @@ main {
     color: $section-headings-color;
   }
 
+  h1 {
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    margin-bottom: 6px;
+  }
+
   p {
     margin-bottom: 1em;
   }
@@ -797,8 +835,8 @@ main {
   hr {
     height: 2px;
     padding: 0;
-    margin: 1rem 0;
-    background-color: $hr-border-color;
+    margin: 25px 0;
+    background-color: #dedede;
     border: 0;
   }
 }

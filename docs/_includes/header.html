@@ -11,7 +11,9 @@
             </button>
             <div id="nav-dropdown" class="hide">
                 {% include gen-nav.html entries=site.data.nav %}
-                <input onkeydown="if (event.keyCode == 13) { window.location = '/search/?' + this.value }" id="search-input">
+                <div style="margin: 5px 16px 16px 16px">
+                    <input onkeydown="if (event.keyCode == 13) { window.location = '/search/?' + this.value }" id="search-input">
+                </div>
             </div>
             <div class="nav-entries">
                 {% include gen-nav.html entries=site.data.nav %}

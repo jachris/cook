@@ -2,6 +2,8 @@
   link: /docs/
 #- name: Features
 #  link: /features/
+- name: Blog
+  link: /blog/
 - name: Installation
   link: /docs/installation/
 #- name: ↗ Examples
