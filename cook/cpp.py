@@ -8,7 +8,7 @@ from . import core
 def executable(
     name, sources=None, include=None, define=None, flags=None, links=None,
     compiler=None, warnings_are_errors=False, scan=True, debug=True,
-    objects=None
+    objects=None, linkflags=None
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -21,6 +21,7 @@ def executable(
     define = dict(define) if define else {}
     flags = list(flags) if flags else []
     objects = list(objects) if objects else []
+    linkflags = list(linkflags) if linkflags else []
 
     static = []
     shared = []
@@ -67,7 +68,8 @@ def executable(
         outputs=[name],
         result={
             'type': 'cpp.executable'
-        }
+        },
+        check=linkflags
     )
 
     if toolchain is GNU:
@@ -78,10 +80,12 @@ def executable(
             command.append(s)
             command.append('-Wl,-rpath,' + os.path.dirname(core.absolute(s)))
         command.append('-lstdc++')
+        command.extend(linkflags)
         core.call(command, env=os.environ)
     elif toolchain is MSVC:
         command = [compiler, '/Fe' + name, '/nologo']
         command.extend(objects + shared + static)
+        command.extend(linkflags)
         core.call(command, env=_msvc_get_cl_env(compiler))
 
 
@@ -89,7 +93,7 @@ def executable(
 def static_library(
     name=None, sources=None, include=None, define=None, flags=None,
     headers=None, compiler=None, warnings_are_errors=False, scan=True,
-    debug=True, objects=None
+    debug=True, objects=None, linkflags=None
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -104,6 +108,7 @@ def static_library(
         sources = []
     if objects is None:
         objects = []
+    linkflags = list(linkflags) if linkflags else []
 
     for source in sources:
         obj = object(
@@ -136,18 +141,21 @@ def static_library(
         result={
             'type': 'cpp.static_library',
             'headers': core.absolute(core.source(headers))
-        }
+        },
+        check=linkflags
     )
 
     if toolchain is GNU:
         archiver = core.which('ar')
         command = [archiver, 'rs', name]
         command.extend(objects)
+        command.extend(linkflags)
         core.call(command)
     elif toolchain is MSVC:
         archiver = os.path.join(os.path.dirname(compiler), 'lib.exe')
         command = [archiver, '/OUT:' + name]
         command.extend(objects)
+        command.extend(linkflags)
         core.call(command, env=_msvc_get_cl_env(compiler))
 
 
@@ -155,7 +163,7 @@ def static_library(
 def shared_library(
     name, sources, include=None, define=None, flags=None, headers=None,
     compiler=None, warnings_are_errors=False, scan=True, msvc_lib=False,
-    debug=True
+    debug=True, linkflags=None
 ):
     if compiler is None:
         compiler, toolchain = _get_default_compiler()
@@ -166,6 +174,7 @@ def shared_library(
 
     if headers is None:
         headers = []
+    linkflags = list(linkflags) if linkflags else []
 
     if flags is None:
         flags = []
@@ -212,16 +221,19 @@ def shared_library(
             'headers': core.absolute(core.source(headers)),
             'output': core.absolute(name)
         },
+        check=linkflags
     )
 
     if toolchain is GNU:
         command = [compiler, '-shared', '-o', name]
         command.extend(objects)
         command.append('-Wl,-soname,' + os.path.basename(name))
+        command.extend(linkflags)
         core.call(command, env=os.environ)
     elif toolchain is MSVC:
         command = [compiler, '/Fe' + name, '/nologo', '/LD']
         command.extend(objects)
+        command.extend(linkflags)
         core.call(command, env=_msvc_get_cl_env(compiler))
         base = os.path.splitext(name)[0]
         if not msvc_lib:
