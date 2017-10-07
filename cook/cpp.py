@@ -329,7 +329,7 @@ def object(
 
         if scan:
             depfile = core.temporary(core.random('.d'))
-            command.extend(['-MMD', '-MF', depfile])
+            command.extend(['-MD', '-MF', depfile])
         else:
             depfile = None
 
