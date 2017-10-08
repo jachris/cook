@@ -18,6 +18,7 @@ is not ready for production use.
 You can install Cook using `pip3`.
 
 ```bash
+sudo apt-get install python3  # If you are using Ubuntu.
 pip3 install https://github.com/jachris/cook/archive/master.zip
 ````
 
@@ -33,6 +34,7 @@ pip3 install https://github.com/jachris/cook/archive/master.zip --upgrade
 You will need `git` and `Python3`.
 
 ```bash
+$ sudo apt-get install git python3  # If you are using Ubuntu.
 $ git clone https://github.com/jachris/cook
 $ cd cook
 $ ./setup.py develop   # If you are using Unix, OR
@@ -40,4 +42,4 @@ $ py setup.py develop  # If you are using Windows
 ```
 
 If you want to update to the newest version you just have to `git pull` since
-you have installed Cook using the `develop` mode.
+you have used the `develop` mode.
