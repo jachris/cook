@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Libraries are automatically detected on Windows now as well
 - C++ rules allow specifying `linkflags`
+- Support for MSVC 2017
 
 ### Changed
 - Using `cook --targets` will now list paths relative to the build directory

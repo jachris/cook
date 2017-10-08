@@ -536,10 +536,13 @@ def _msvc_extract_vcvars(vcvars):
 
 
 def _msvc_find_cl():
-    x = (r'C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC'
-         r'\Auxiliary\Build\vcvarsall.bat')
-    if os.path.isfile(x):
-        env = _msvc_extract_vcvars(x)
+    path = os.path.join(
+        os.environ.get('ProgramFiles(x86)', r'C:\Program Files (x86)'),
+        r'Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build',
+        'vcvarsall.bat'
+    )
+    if os.path.isfile(path):
+        env = _msvc_extract_vcvars(path)
         cl = core.which('cl.exe', env=env)
         if cl is None:
             raise FileNotFoundError('expected to find cl')
