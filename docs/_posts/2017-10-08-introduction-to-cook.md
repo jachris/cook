@@ -1,3 +1,7 @@
+---
+title: Introduction to Cook
+---
+
 Welcome to the introductory blog post about Cook---a new build system. You are 
 probably asking yourself: Why do we need yet another build system? As of now,
 [Wikipedia lists close to 50 candidates](https://en.wikipedia.org/wiki/List_of_build_automation_software).
