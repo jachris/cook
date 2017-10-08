@@ -102,7 +102,7 @@ untested but it should work as well.
 
 ## Advanced Examples
 
-Putting a source files belonging to a certain module or library in their own
+Putting source files belonging to a certain module or library in their own
 shared folder is a common pattern. This structure is nicely represented using
 glob patterns, such as:
 
