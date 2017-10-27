@@ -5,7 +5,6 @@ title: Introduction to Cook
 Welcome to the introductory blog post about Cook---a new build system. You are 
 probably asking yourself: Why do we need yet another build system? As of now,
 [Wikipedia lists close to 50 candidates](https://en.wikipedia.org/wiki/List_of_build_automation_software).
-What in the world could Cook give you, that other build-systems do not?
 
 Let's start with one simple observation: [All build systems suck](http://msoucy.me/seminars/bss/#(1)). 
 While some may suck less, there is not a single one that's *really* great. And
@@ -24,7 +23,7 @@ using the examples. Everything is appreciated.
 
 ## Motivation
 
-Cook was created to address two specific problems:
+Cook was created to address two specific problems, which are somehow related:
 
 - **Simplicity**. Most build-systems are so complex that even doing simple
   tasks inevitably lead to consulting Google and Stack Overflow. Some are even
@@ -32,8 +31,8 @@ Cook was created to address two specific problems:
   and provoke a culture where everyone just copies build-scripts from other
   projects, makes little changes to address the differences between the projects
   until it somehow works---for that one developer at least. Others probably
-  won't have fun using that hotchpotch. Oh, and let's just not talk about 
-  CMake's monstrosity of a language.
+  won't have fun using that hotchpotch. This is sometimes caused by poor API
+  design and in CMake's case, the language probably makes it even worse.
   
   Additionally, most codebases are so
   complex that truly understanding the system is impossible: While you don't
@@ -42,24 +41,35 @@ Cook was created to address two specific problems:
   [Bazel](https://bazel.build/) clocks in at 3.3K Java files with a total size 
   of 26MB---and that's just counting the core (`bazel/src/`). 
   [CMake](https://cmake.org/) is about 1.75K `.cxx` or `.cmake` files which are
-  about 11MB in total.
+  about 11MB in total. This makes introducing new bugs easier and solving known
+  problems harder.
+
 - **Extensibility**. Most of the common use-cases are supported by all major
   build-systems. They most often provide an API to define custom tasks as well.
-  However, theses APIs could be a lot better. Wouldn't it be cool if one could
+  However, theses APIs could be a lot better. Take a look at
+  [how to create a rule with Bazel](https://docs.bazel.build/skylark/rules.html).
+  While you can express some pretty powerful things using Bazel it still seems
+  like creating rules was not the first thing they had in mind when designing
+  the system.
+
+  Wouldn't it be cool if one could
   just write custom tasks down linearly like they will be executed by the
   system? This is not about simple commands---it's about complex behaviours 
   which are at hand when dealing with non-trivial builds, i.e. returning the
   output of gcc's `-MD` (which lists all used files during the compilation) to
-  the system.
+  the system. Using Cook, this is possible. You can use the whole Python
+  standard library and some convenience functions provided by Cook to script
+  complex behaviour which integrates nicely into the whole build process.
 
 Don't get me wrong: CMake and Bazel are really doing a good job. They are 
-really powerful, having support for project generation for many IDEs, 
+quite powerful, have support for project generation for many IDEs,
 integrated packaging and testing or scalability. It just happens that their 
 goals do not align well with some people's needs.
 
 Cook currently has 21 source files with a total size of 0.073MB---including 
-rules for C++, GIMP, LaTeX, LibreOffice and other misc miscellaneous rules. 
-Extending it by writing a custom one is really easy.
+rules for C++, GIMP, LaTeX (currently not that good), LibreOffice and other
+miscellaneous rules. Extending it by writing a custom one is really easy, but
+let's first take a look at how to use the built-in rules.
   
 
 ## Hello World
@@ -122,7 +132,7 @@ cpp.static_library(
 Sometimes you want to enable or disable certain features of your application 
 during compilation, for example when having a lite and professional version.
 Cook allows declaring options of various types which can be set upon 
-invocation.
+invocation. Also note that we are linking with some Boost libraries easily.
 
 ```python
 from cook import cpp, core
@@ -230,8 +240,8 @@ We hope to have given you a brief overview about the project. This was in no
 way an article covering the whole spectrum of things to be said, but if we 
 caught your interest, then you can take a look at the 
 [GitHub repository](https://github.com/jachris/cook). While not all parts are
-great from a coding-style point of view, it is hopefully enough polished to get
-you started. Feel free to 
+great from a coding-style point of view yet, it is hopefully sufficiently
+polished to get you started. Feel free to
 [open an issue](https://github.com/jachris/cook/issues) or maybe even upload a 
 pull request. Your help is very much appreciated.
 
