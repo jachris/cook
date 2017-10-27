@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Using `cook --targets` will now list paths relative to the build directory
 - Includes in system directories will now be tracked too
 
+### Fixed
+- The task-failed handler was not properly protected against exceptions
+
 
 ## [0.2.0] - 2017-08-17
 ### Added
