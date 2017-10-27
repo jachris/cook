@@ -338,7 +338,7 @@ def object(
 
         command.extend(flags)
 
-        output = core.call(command)
+        output = core.call(command, env=os.environ)
 
         if scan:
             # TODO: Good parsing.
