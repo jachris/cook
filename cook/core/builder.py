@@ -113,11 +113,15 @@ def start(jobs, request=None):
 
 
 def fail(task, exc):
-    events.on_fail(task, exc)
-    for output in task.outputs:
-        if os.path.isfile(output.path):
-            os.remove(output.path)
-    done.put((task, False, None))
+    try:
+        events.on_fail(task, exc)
+        for output in task.outputs:
+            if os.path.isfile(output.path):
+                os.remove(output.path)
+        done.put((task, False, None))
+    except Exception as exc:
+        print(exc)
+        return
 
 
 def default(*results):
