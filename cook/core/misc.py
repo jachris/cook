@@ -255,7 +255,7 @@ class CallError(Exception):
             cmdline, self.returned)
 
 
-def call(command, cwd=None, env=None):
+def call(command, cwd=None, env=None, timeout=None):
     log.debug('CALL {}'.format(subprocess.list2cmdline(command)))
 
     if env is None:
@@ -264,7 +264,7 @@ def call(command, cwd=None, env=None):
     try:
         output = subprocess.check_output(
             command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
-            stdin=subprocess.DEVNULL
+            stdin=subprocess.DEVNULL, timeout=timeout
         )
         return output.decode(errors='ignore')
     except subprocess.CalledProcessError as e:
