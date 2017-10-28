@@ -2,7 +2,10 @@ from cook import core
 
 
 @core.rule
-def run(command, outputs, inputs=None, message=None, env=None):
+def run(
+    command, outputs, inputs=None, message=None, env=None, timeout=None,
+    cwd=None
+):
     inputs = core.source(inputs or [])
     outputs = core.build(outputs)
     command[0] = core.which(command[0])
@@ -22,4 +25,4 @@ def run(command, outputs, inputs=None, message=None, env=None):
             real.extend(outputs)
         else:
             real.append(token)
-    core.call(real, env=env)
+    core.call(real, env=env, timeout=timeout, cwd=cwd)
