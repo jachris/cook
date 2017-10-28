@@ -255,11 +255,17 @@ class CallError(Exception):
             cmdline, self.returned)
 
 
+_default_env = {}
+for name in ('TMP', 'TEMP', 'PATH'):
+    if name in os.environ:
+        _default_env[name] = os.environ[name]
+
+
 def call(command, cwd=None, env=None):
     log.debug('CALL {}'.format(subprocess.list2cmdline(command)))
 
     if env is None:
-        env = {}
+        env = _default_env
 
     try:
         output = subprocess.check_output(
