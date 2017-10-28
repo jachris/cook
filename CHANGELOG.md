@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - C++ rules allow specifying `linkflags`
 - Support for MSVC 2017
 - Experimental rules for native Android apps
+- New `timeout` parameter for `core.call()`
 
 ### Changed
 - Using `cook --targets` will now list paths relative to the build directory
