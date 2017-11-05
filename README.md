@@ -71,7 +71,7 @@ def replace(source, destination, mapping):
     with open(source) as file:
         content = file.read()
     for key, value in mapping.items():
-        content.replace(key, value)
+        content = content.replace(key, value)
     with open(destination, 'w') as file:
         file.write(content)
 ```
