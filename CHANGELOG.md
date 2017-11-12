@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for MSVC 2017
 - Experimental rules for native Android apps
 - New `timeout` parameter for `core.call()`
+- Mechanism to prevent accidental deletes by using a wrong build directory
 
 ### Changed
 - Using `cook --targets` will now list paths relative to the build directory
