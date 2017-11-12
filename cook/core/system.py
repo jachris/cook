@@ -1,7 +1,10 @@
 import os
 import shutil
+import sys
 
-from os.path import normpath, relpath, join, abspath
+from os.path import normpath, relpath, join
+
+from . import log
 
 build_dir = None
 intermediate_dir = None
@@ -11,13 +14,20 @@ temporary_dir = None
 def initialize(destination):
     global build_dir, intermediate_dir, temporary_dir
 
-    build_dir = abspath(destination)
+    build_dir = os.path.abspath(destination)
     cook = os.path.join(build_dir, '.cook/')
     intermediate_dir = os.path.join(cook, 'intermediate/')
     temporary_dir = os.path.join(cook, 'temporary/')
 
-    if not os.path.isdir(destination):
-        os.makedirs(destination)
+    if not os.path.isdir(build_dir):
+        os.makedirs(build_dir)
+    elif os.listdir(build_dir) and not os.path.isdir(cook):
+        log.error(
+            'The build directory "{}" is not empty and does not seem to be '
+            'the location of a previous build.'.format(build_dir)
+        )
+        sys.exit(1)
+
     if not os.path.isdir(cook):
         os.mkdir(cook)
     if not os.path.isdir(intermediate_dir):
