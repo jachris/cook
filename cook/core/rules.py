@@ -66,8 +66,8 @@ def publish(
         for output in outputs:
             if graph.has_file(output):
                 raise ValueError('output collision')
-            elif not phony and not misc.is_inside(output, system.build('.')):
-                raise ValueError('output outside of build directory')
+            # elif not phony and not misc.is_inside(output, system.build('.')):
+            #     raise ValueError('output outside of build directory')
 
     if not isinstance(result, dict):
         if result is None:
