@@ -62,7 +62,7 @@ def load(path):
 
     with open(path) as f:
         content = f.read()
-    symbols = {}
+    symbols = {'__file__': path}
     exec(compile(content, path, 'exec'), symbols)
 
     directories.pop()
