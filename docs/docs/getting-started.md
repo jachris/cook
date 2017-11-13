@@ -81,7 +81,7 @@ Hello world!
 ## Next Steps
 
 If you are interested in creating custom rules, make sure to visit
-[the tutorial]({% link docs/getting-started.md %}). You can find more 
-information about the C++ rules [here]({% link docs/rules/cpp.md %}) or maybe
-take a look at the [features]({% link docs/features/index.md %}) provided by
-Cook and the [other rules]({% link docs/rules/index.md %})?
+[the tutorial]({% link docs/custom-rules.md %}). You can find more information
+about the C++ rules [here]({% link docs/rules/cpp.md %}) or maybe take a look
+at the [features]({% link docs/features/index.md %}) provided by Cook and the
+[other rules]({% link docs/rules/index.md %})?
