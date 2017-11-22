@@ -40,4 +40,4 @@ def export(source, destination=None, format='png'):
 
     command = [_gimp, '-indfs', '--batch-interpreter', 'python-fu-eval',
                '-b', _script.format(input=source, output=destination)]
-    core.call(command, env=os.environ)
+    core.call(command)

@@ -115,7 +115,7 @@ def native_app(name, sources=None, archs=None):
         _aapt, 'package', '-M', manifest, '-I', _android,
         '-S', res, '-J', res_dir, '-m', '-f'
     ]
-    core.call(res_cmd, env=os.environ)
+    core.call(res_cmd)
     r = os.path.join(res_dir, *package.split('.'), 'R.java')
 
     cls_dir = core.temporary(core.random())
@@ -128,20 +128,20 @@ def native_app(name, sources=None, archs=None):
         _javac, '-d', cls_dir, '-classpath', clspath,
         '-sourcepath', srcpath, r, '-source', '1.7', '-target', '1.7'
     ]
-    core.call(comp_cmd, env=os.environ)
+    core.call(comp_cmd)
 
     dex_dir = core.temporary(core.random())
     os.mkdir(dex_dir)
     cls_dex = os.path.join(dex_dir, 'classes.dex')
 
-    core.call([_dx, '--dex', '--output=' + cls_dex, cls_dir], env=os.environ)
+    core.call([_dx, '--dex', '--output=' + cls_dex, cls_dir])
 
     unsigned = core.temporary(core.random('_unsigned.apk'))
     command = [
         _aapt, 'package', '-f', '-M', manifest, '-S', res, '-I', _android,
         '-F', unsigned, dex_dir, lib_dir
     ]
-    core.call(command, env=os.environ)
+    core.call(command)
 
     signed = core.temporary(core.random('_signed.apk'))
 
@@ -151,11 +151,11 @@ def native_app(name, sources=None, archs=None):
         'android', '-signedjar', signed, unsigned,
         '-sigalg', 'SHA1withRSA', '-digestalg', 'SHA1',  # TODO: REMOVE
         'androiddebugkey'
-    ], env=os.environ)
+    ])
 
     core.call([
         _align, '-f', '4', signed, name
-    ], env=os.environ)
+    ])
 
 
 @core.rule
@@ -172,9 +172,9 @@ def install(name, app, launch=False):
 
     core.call([
         _adb, 'install', '-r', apk
-    ], env=os.environ)
+    ])
 
     if launch:
         core.call([
             _adb, 'shell', 'monkey', '-p', app.package, '1'
-        ], env=os.environ)
+        ])

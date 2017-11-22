@@ -81,7 +81,7 @@ def executable(
             command.append('-Wl,-rpath,' + os.path.dirname(core.absolute(s)))
         command.append('-lstdc++')
         command.extend(linkflags)
-        core.call(command, env=os.environ)
+        core.call(command)
     elif toolchain is MSVC:
         command = [compiler, '/Fe' + name, '/nologo']
         command.extend(objects + shared + static)
@@ -229,7 +229,7 @@ def shared_library(
         command.extend(objects)
         command.append('-Wl,-soname,' + os.path.basename(name))
         command.extend(linkflags)
-        core.call(command, env=os.environ)
+        core.call(command)
     elif toolchain is MSVC:
         command = [compiler, '/Fe' + name, '/nologo', '/LD']
         command.extend(objects)
@@ -338,7 +338,7 @@ def object(
 
         command.extend(flags)
 
-        output = core.call(command, env=os.environ)
+        output = core.call(command)
 
         if scan:
             # TODO: Good parsing.
@@ -522,7 +522,7 @@ def _msvc_extract_vcvars(vcvars):
             '@echo LIB=%LIB%;%LIBPATH%'
         ]).format(vcvars=vcvars, mode='x86'))
     cmd = core.which('cmd.exe')
-    output = core.call([cmd, '/C', helper], env=os.environ)
+    output = core.call([cmd, '/C', helper])
     env = os.environ.copy()
     steps = 0
     for line in output.strip().splitlines():

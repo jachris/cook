@@ -259,7 +259,7 @@ def call(command, cwd=None, env=None, timeout=None):
     log.debug('CALL {}'.format(subprocess.list2cmdline(command)))
 
     if env is None:
-        env = {}
+        env = os.environ
 
     try:
         output = subprocess.check_output(
