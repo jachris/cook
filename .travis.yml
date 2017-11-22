@@ -10,7 +10,10 @@ install:
 script:
   - 'cd examples'
   - 'cd cpp && cook -v && cd ..'
-  - 'cd cpp_warning && cook -v && cd ..'
+  - 'cd cpp_warning'
+  - 'cook -v | grep "unused_var"'
+  - 'cook -v | grep "unused_var"'
+  - 'cd ..'
   - 'cd file && cook -v && cd ..'
 
 notifications:
