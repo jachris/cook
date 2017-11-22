@@ -5,6 +5,7 @@
 import functools
 import json
 import subprocess
+import sys
 
 subprocess.check_call(['cook', '--results'])
 
@@ -15,7 +16,7 @@ with open('CMakeLists.txt', 'w') as file:
     w = functools.partial(print, file=file)
     w('cmake_minimum_required(VERSION 2.8.8)')
     w()
-    w('add_custom_target(COOK COMMAND cook '
+    w('add_custom_target(COOK COMMAND ' + sys.executable + ' clion.py COMMAND cook '
       'WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})')
     w()
 
