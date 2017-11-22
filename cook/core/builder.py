@@ -48,8 +48,8 @@ def start(jobs, request=None):
 
     for task in graph.tasks:
         # Only display warning if we will not rebuild it.
-        if record.has_primary(task) and task not in outdated:
-            warnings = record.get_warnings(task)
+        if record.has_primary(task.primary) and task not in outdated:
+            warnings = record.get_warnings(task.primary)
             if warnings is not None:
                 log.warning('Warnings by {}:\n{}'.format(task, warnings))
 
