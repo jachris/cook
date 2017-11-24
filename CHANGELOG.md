@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Loading scripts will now inject a `__file__` variable pointing to the script
 - Automatic regeneration has been added to `examples/cpp/clion.py` 
 - Warning when removing undeclared files in the build directory
+- Add WIP (very basic for now) rules for external projects / build systems
 
 ### Changed
 - Detect now all MSVC versions from 7.0 to 14.0 (2015)

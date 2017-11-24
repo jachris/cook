@@ -1,0 +1,10 @@
+rule obj
+  deps = gcc
+  depfile = $out.d
+  command = g++ -c $in -o $out -MMD -MF $out.d
+
+rule link
+  command = g++ $in -o $out
+
+build foo.o: obj foo.cpp
+build foo: link foo.o
