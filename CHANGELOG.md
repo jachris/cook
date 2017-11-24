@@ -30,17 +30,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - C++ toolchains are now public (`cpp.GNU` and `cpp.MSVC`)
 - C++ compile time definitions are now properly translated by type
 - Check if all options were consumed
+- Loading scripts will now inject a `__file__` variable pointing to the script
+- Automatic regeneration has been added to `examples/cpp/clion.py` 
+- Warning when removing undeclared files in the build directory
 
 ### Changed
 - Detect now all MSVC versions from 7.0 to 14.0 (2015)
 - Globbing with `core.glob()` will return only files for now
 - Exceptions and tracebacks are now correctly displayed
+- `core.call` will now use all environment variables as a default
 
 ### Fixed
 - `core.glob()` was not recursive under some circumstances
 - Output paths were not properly verified
 - `cpp.object` was using wrong paths if name was specified
 - Messages regarding failed tasks could interleave
+- Warning retrieval was broken
 
 
 ## 0.1.0 - 2017-07-27

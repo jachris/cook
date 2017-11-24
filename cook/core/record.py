@@ -1,7 +1,7 @@
 import json
 import os
 
-from .system import build
+from .system import build, log
 
 data = None
 
@@ -44,6 +44,7 @@ def clean():
         for file in files:
             path = os.path.abspath(os.path.join(root, file))
             if not path == record and not graph.has_file(path):
+                log.warning('Removing non-declared file: ' + path)
                 os.remove(path)
 
 
