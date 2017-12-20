@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warning when removing undeclared files in the build directory
 - Add WIP (very basic for now) rules for external projects / build systems
 - Build can now be stopped gracefully (Ctrl+C)
+- Added `-f` / `--fastfail` flag to immediately exit after first failed task
 
 ### Changed
 - Using `cook --targets` will now list paths relative to the build directory

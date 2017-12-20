@@ -14,7 +14,7 @@ STOP = object()
 
 # This should be rewritten, especially because task primary / secondary
 # calculation is kind of misplaced here. It is by far the worst function.
-def start(jobs, request=None):
+def start(jobs, request=None, fastfail=False):
     if not isinstance(jobs, int):
         raise TypeError('jobs must be of type int')
     elif jobs <= 0:
@@ -98,6 +98,13 @@ def start(jobs, request=None):
         outdated.remove(task)
         if not success:
             failed.add(task)
+            if fastfail:
+                for task in current:
+                    events.on_fail(task, None)
+                    for output in task.outputs:
+                        if os.path.isfile(output.path):
+                            os.remove(output.path)
+                break
             continue
 
         # Put all tasks in queue that can and should be done.

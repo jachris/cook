@@ -171,6 +171,8 @@ def main():
     arg('-v', '--verbose', action='store_true', help='Enable debug mode')
     arg('-o', '--output', metavar='PATH',
         help='Override build directory')
+    arg('-f', '--fastfail', action='store_true',
+        help='Immediately exit after first failed task')
     arg('rest', nargs='*', help=argparse.SUPPRESS)
     arg('--options', action='store_true', help='List all options and exit')
     arg('--targets', action='store_true', help='List all targets and exit')
@@ -269,7 +271,7 @@ def main():
             json.dump(results, file, default=set_to_list)
         return
 
-    builder.start(args.jobs or jobs, request or None)
+    builder.start(args.jobs or jobs, request or None, args.fastfail)
 
     if not outdated:
         on_info('No work to do.')
