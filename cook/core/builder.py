@@ -1,12 +1,15 @@
 import os
 import queue
 import threading
+import signal
 
 from . import graph, events, record, log, system
 
 defaults = set()
 todo = queue.Queue()
 done = queue.Queue()
+
+STOP = object()
 
 
 # This should be rewritten, especially because task primary / secondary
@@ -64,18 +67,33 @@ def start(jobs, request=None):
         Worker(identifier).start()
 
     added = set()
-    current = 0
+    current = set()
 
     for task in outdated:
         if not any(input.producer in outdated for input in task.inputs):
             added.add(task)
             todo.put(task)
-            current += 1
+            current.add(task)
+
+    def handle(signal, frame):
+        print('\r  \r', end='', flush=True)
+        done.put((STOP, None, None))
+
+    signal.signal(signal.SIGINT, handle)
 
     failed = set()
     while current:
         task, success, deposits = done.get()
-        current -= 1
+
+        if task is STOP:
+            for task in current:
+                events.on_fail(task, None)
+                for output in task.outputs:
+                    if os.path.isfile(output.path):
+                        os.remove(output.path)
+            break
+
+        current.remove(task)
 
         outdated.remove(task)
         if not success:
@@ -96,7 +114,7 @@ def start(jobs, request=None):
                 ):
                     added.add(dependant)
                     todo.put(dependant)
-                    current += 1
+                    current.add(dependant)
 
         task.deposits = {graph.get_file(deposit) for deposit in deposits[0]}
         task.warnings = deposits[1]

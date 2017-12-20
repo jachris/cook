@@ -108,6 +108,9 @@ def on_fail(task, exc):
         on_error('Failed task: {}'.format(', '.join(
             good_path(file.path) for file in task.outputs)))
 
+        if exc is None:
+            return
+
         if verbose:
             print('Saved traceback (most recent call last):')
             tb = remove_traceback_noise(task.stack)
