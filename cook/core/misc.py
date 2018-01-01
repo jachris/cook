@@ -15,6 +15,11 @@ linux = system == 'Linux'
 windows = system == 'Windows'
 mac = system == 'darwin'
 
+if windows:
+    NEW_PROCESS_GROUP = dict(creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+else:
+    NEW_PROCESS_GROUP = dict(preexec_fn=os.setpgrp)
+
 
 def cache(func):
     """Thread-safe caching."""
@@ -262,18 +267,11 @@ def call(command, cwd=None, env=None, timeout=None):
         env = os.environ
 
     try:
-        if windows:
-            output = subprocess.check_output(
-                command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
-                stdin=subprocess.DEVNULL, timeout=timeout,
-                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
-            )
-        else:
-            output = subprocess.check_output(
-                command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
-                stdin=subprocess.DEVNULL, timeout=timeout,
-                preexec_fn=os.setpgrp
-            )
+        output = subprocess.check_output(
+            command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
+            stdin=subprocess.DEVNULL, timeout=timeout,
+            **NEW_PROCESS_GROUP
+        )
         return output.decode(errors='ignore')
     except subprocess.CalledProcessError as e:
         output = e.output.decode(errors='ignore')
