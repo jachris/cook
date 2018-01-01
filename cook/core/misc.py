@@ -266,7 +266,7 @@ def call(command, cwd=None, env=None, timeout=None):
             output = subprocess.check_output(
                 command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
                 stdin=subprocess.DEVNULL, timeout=timeout,
-                creationflags=0x00000200
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
             )
         else:
             output = subprocess.check_output(
