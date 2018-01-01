@@ -11,7 +11,7 @@ from .core.misc import is_inside, relative
 windows = platform.system() == 'Windows'
 lock = threading.RLock()
 
-if windows:
+if windows and not os.environ.get('TERM'):
     import ctypes
     import functools
     stdout_id = ctypes.c_ulong(0xfffffff5)
