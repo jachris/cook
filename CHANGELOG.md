@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Includes in system directories will now be tracked too
 - Disabled restriction of output paths having to be in the build directory
 - `core.call` will now use all environment variables as a default
+- Using `Ctrl+C` will now save process and let the system shutdown properly
 
 ### Fixed
 - The task-failed handler was not properly protected against exceptions
