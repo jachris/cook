@@ -262,10 +262,18 @@ def call(command, cwd=None, env=None, timeout=None):
         env = os.environ
 
     try:
-        output = subprocess.check_output(
-            command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
-            stdin=subprocess.DEVNULL, timeout=timeout
-        )
+        if windows:
+            output = subprocess.check_output(
+                command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
+                stdin=subprocess.DEVNULL, timeout=timeout,
+                creationflags=0x00000200
+            )
+        else:
+            output = subprocess.check_output(
+                command, stderr=subprocess.STDOUT, env=env, cwd=cwd,
+                stdin=subprocess.DEVNULL, timeout=timeout,
+                preexec_fn=os.setpgrp
+            )
         return output.decode(errors='ignore')
     except subprocess.CalledProcessError as e:
         output = e.output.decode(errors='ignore')

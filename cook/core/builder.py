@@ -83,29 +83,27 @@ def start(jobs, request=None, fastfail=False):
 
     failed = set()
     while current:
-        task, success, deposits = done.get()
+        task, exc, deposits = done.get()
 
         if task is STOP:
-            for task in current:
-                events.on_fail(task, None)
-                for output in task.outputs:
-                    if os.path.isfile(output.path):
-                        os.remove(output.path)
+            log.error('Aborting {} running tasks.'.format(len(current)))
+            # TODO: Remove outputs?
             break
 
         current.remove(task)
-
         outdated.remove(task)
-        if not success:
+
+        if exc:
             failed.add(task)
+            events.on_fail(task, exc)
+            # TODO: Remove outputs?
             if fastfail:
-                for task in current:
-                    events.on_fail(task, None)
-                    for output in task.outputs:
-                        if os.path.isfile(output.path):
-                            os.remove(output.path)
+                log.error('Aborting {} running tasks.'.format(len(current)))
+                # TODO: Remove outputs?
                 break
             continue
+
+        events.on_done(task)
 
         # Put all tasks in queue that can and should be done.
         for output in task.outputs:
@@ -139,11 +137,7 @@ def start(jobs, request=None, fastfail=False):
 
 def fail(task, exc):
     try:
-        events.on_fail(task, exc)
-        for output in task.outputs:
-            if os.path.isfile(output.path):
-                os.remove(output.path)
-        done.put((task, False, None))
+        done.put((task, exc, None))
     except Exception as exc:
         print(exc)
         return
@@ -174,5 +168,4 @@ class Worker(threading.Thread):
             except Exception as exc:
                 fail(task, exc)
             else:
-                events.on_done(task)
-                done.put((task, True, deposits))
+                done.put((task, None, deposits))
