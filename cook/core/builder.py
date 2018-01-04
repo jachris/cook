@@ -3,7 +3,7 @@ import queue
 import threading
 import signal
 
-from . import graph, events, record, log, system
+from . import graph, events, record, log, system, misc
 
 defaults = set()
 todo = queue.Queue()
@@ -83,7 +83,16 @@ def start(jobs, request=None, fastfail=False):
 
     failed = set()
     while current:
-        task, exc, deposits = done.get()
+        if misc.windows:
+            # Signal handling does not work very well on Windows...
+            while True:
+                try:
+                    task, exc, deposits = done.get(timeout=0.1)
+                    break
+                except queue.Empty:
+                    pass
+        else:
+            task, exc, deposits = done.get()
 
         if task is STOP:
             log.error('Aborting {} running tasks.'.format(len(current)))
