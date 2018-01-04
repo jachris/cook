@@ -1,6 +1,7 @@
 import hashlib
 import os
 import shutil
+import tarfile
 import zipfile
 from urllib.request import urlopen
 
@@ -17,11 +18,20 @@ def extract(archive, mapping):
         message='Extracting {}'.format(archive)
     )
 
-    with zipfile.ZipFile(archive) as zip:
-        for path, destination in mapping.items():
-            with zip.open(path) as member:
-                with open(core.build(destination), 'wb') as output:
-                    shutil.copyfileobj(member, output)
+    if zipfile.is_zipfile(archive):
+        with zipfile.ZipFile(archive) as zip:
+            for path, destination in mapping.items():
+                with zip.open(path) as member:
+                    with open(core.build(destination), 'wb') as output:
+                        shutil.copyfileobj(member, output)
+    elif tarfile.is_tarfile(archive):
+        with tarfile.open(archive) as tar:
+            for path, destination in mapping.items():
+                with tar.extractfile(path) as member:
+                    with open(core.build(destination), 'wb') as output:
+                        shutil.copyfileobj(member, output)
+    else:
+        raise ValueError('Unsupported file: ' + archive)
 
 
 @core.rule
