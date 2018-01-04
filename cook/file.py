@@ -1,7 +1,27 @@
 import hashlib
+import os
+import shutil
+import zipfile
 from urllib.request import urlopen
 
 from . import core
+
+
+@core.rule
+def extract(archive, mapping):
+    core.source(archive)
+
+    yield core.publish(
+        inputs=[archive],
+        outputs=core.build(mapping.values()),
+        message='Extracting {}'.format(archive)
+    )
+
+    with zipfile.ZipFile(archive) as zip:
+        for path, destination in mapping.items():
+            with zip.open(path) as member:
+                with open(core.build(destination), 'wb') as output:
+                    shutil.copyfileobj(member, output)
 
 
 @core.rule
@@ -65,8 +85,11 @@ def group(inputs, name):
 
 
 @core.rule
-def download(url, destination, sha256):
-    destination = core.build(destination)
+def download(url, sha256=None, destination=None):
+    if destination is None:
+        destination = core.intermediate(os.path.basename(url))
+    else:
+        destination = core.build(destination)
 
     yield core.publish(
         message='Downloading "{}"'.format(url),
@@ -84,5 +107,10 @@ def download(url, destination, sha256):
                 data = remote.read(4096)
 
     checksum = hasher.hexdigest()
-    if checksum != sha256:
-        raise ValueError('Expected {}, got {}'.format(sha256, checksum))
+    if sha256 is None:
+        yield core.deposit(
+            warnings='Downloaded "{}" without verification. \n'
+                     'sha256={}'.format(url, checksum)
+        )
+    elif sha256 != 'IGNORE' and checksum != sha256:
+        raise ValueError('Expected SHA256 {}, got {}'.format(sha256, checksum))
