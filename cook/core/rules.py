@@ -15,7 +15,7 @@ def rule(func):
 
 
 def task(func):
-    return graph.spawn_task(func())
+    return graph.spawn_task(func)
 
 
 def publish(
