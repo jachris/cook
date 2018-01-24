@@ -6,7 +6,7 @@ def run(
     command, outputs, inputs=None, message=None, env=None, timeout=None,
     cwd=None
 ):
-    inputs = core.source(inputs or [])
+    inputs = core.resolve(inputs or [])
     outputs = core.build(outputs)
     command[0] = core.which(command[0])
 

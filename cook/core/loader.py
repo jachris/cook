@@ -7,14 +7,14 @@ may be interpreted relatively to the script that is being executed.
 
 from os.path import normpath, relpath, join, abspath, isdir, isfile, dirname
 
-from . import events
+from . import events, log, misc
 
 loaded = {}
 executing = set()
 directories = ['.']
 
 
-def source(path_or_paths):
+def resolve(path_or_paths):
     """Interpret given paths relative to the current script directory.
 
     If 'path_or_paths' is a single string, the resolved path is
@@ -23,11 +23,18 @@ def source(path_or_paths):
 
     Absolute paths will be returned as they are.
     """
-    if isinstance(path_or_paths, str):
-        return normpath(relpath(join(directories[-1], path_or_paths)))
+    if isinstance(path_or_paths, misc.Marked):
+        return path_or_paths
+    elif isinstance(path_or_paths, str):
+        return misc.Marked(normpath(relpath(
+            join(directories[-1], path_or_paths))))
     else:
-        return [normpath(relpath(join(directories[-1], path)))
-                for path in path_or_paths]
+        return list(map(resolve, path_or_paths))
+
+
+def source(path_or_paths):
+    log.warning('core.source() is deprecated - use core.resolve() instead')
+    return resolve(path_or_paths)
 
 
 def load(path):
@@ -42,7 +49,7 @@ def load(path):
 
     A RuntimeError will be raised if a cycle is detected.
     """
-    path = abspath(source(path))
+    path = abspath(resolve(path))
     if isdir(path):
         directory = path
         path = join(directory, 'BUILD.py')

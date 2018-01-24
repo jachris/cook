@@ -21,6 +21,10 @@ else:
     NEW_PROCESS_GROUP = dict(preexec_fn=os.setpgrp)
 
 
+class Marked(str):
+    pass
+
+
 def cache(func):
     """Thread-safe caching."""
     lock = threading.Lock()
@@ -124,11 +128,11 @@ def which(file, env=os.environ):
 if sys.version_info >= (3, 5):
     def glob(pathname):
         return absolute(filter(os.path.isfile, _glob.iglob(
-            loader.source(pathname), recursive=True)))
+            loader.resolve(pathname), recursive=True)))
 else:
     def glob(pathname):
         return absolute(filter(os.path.isfile, _iglob(
-            loader.source(pathname))))
+            loader.resolve(pathname))))
 
     def _iglob(pathname):
         """Return an iterator which yields the paths matching a pathname pattern.

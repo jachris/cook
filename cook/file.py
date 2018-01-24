@@ -10,7 +10,7 @@ from . import core
 
 @core.rule
 def extract(archive, mapping):
-    core.source(archive)
+    core.resolve(archive)
 
     yield core.publish(
         inputs=[archive],
@@ -36,7 +36,7 @@ def extract(archive, mapping):
 
 @core.rule
 def copy(input, output):
-    input = core.source(input)
+    input = core.resolve(input)
     output = core.build(output)
 
     yield core.publish(
@@ -54,7 +54,7 @@ def copy(input, output):
 def template(
     source, mapping, destination=None, left='###', right='###'
 ):
-    source = core.source(source)
+    source = core.resolve(source)
 
     if destination is None:
         name = core.checksum(source, mapping, left, right)

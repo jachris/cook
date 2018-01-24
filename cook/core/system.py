@@ -4,7 +4,7 @@ import sys
 
 from os.path import normpath, relpath, join
 
-from . import log
+from . import log, misc
 
 build_dir = None
 intermediate_dir = None
@@ -38,26 +38,30 @@ def initialize(destination):
 
 
 def build(path_or_paths):
-    if isinstance(path_or_paths, str):
-        return normpath(relpath(join(build_dir, path_or_paths)))
+    if isinstance(path_or_paths, misc.Marked):
+        return path_or_paths
+    elif isinstance(path_or_paths, str):
+        return misc.Marked(normpath(relpath(join(build_dir, path_or_paths))))
     else:
-        return {normpath(relpath(join(build_dir, path)))
-                for path in path_or_paths}
+        return list(map(build, path_or_paths))
 
 
 def intermediate(path_or_paths):
     """..."""
-    if isinstance(path_or_paths, str):
-        return normpath(relpath(join(intermediate_dir, path_or_paths)))
+    if isinstance(path_or_paths, misc.Marked):
+        return path_or_paths
+    elif isinstance(path_or_paths, str):
+        return misc.Marked(normpath(relpath(
+            join(intermediate_dir, path_or_paths))))
     else:
-        return {normpath(relpath(join(intermediate_dir, path)))
-                for path in path_or_paths}
+        return list(map(intermediate, path_or_paths))
 
 
 def temporary(path_or_paths):
     """..."""
-    if isinstance(path_or_paths, str):
-        return normpath(join(temporary_dir, path_or_paths))
+    if isinstance(path_or_paths, misc.Marked):
+        return path_or_paths
+    elif isinstance(path_or_paths, str):
+        return misc.Marked(normpath(join(temporary_dir, path_or_paths)))
     else:
-        return {normpath(relpath(join(temporary_dir, path)))
-                for path in path_or_paths}
+        return list(map(temporary, path_or_paths))

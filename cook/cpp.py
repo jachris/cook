@@ -35,13 +35,13 @@ def executable(
                 static.append(lib)
             elif getattr(link, 'type') == 'cpp.static_library':
                 include.extend(link.headers)
-                static.append(core.source(link.output))
+                static.append(core.resolve(link.output))
             elif getattr(link, 'type') == 'cpp.shared_library':
                 include.extend(link.headers)
                 if toolchain is GNU:
-                    shared.append(core.source(link.output))
+                    shared.append(core.resolve(link.output))
                 else:
-                    shared.append(core.source(link.msvc_lib))
+                    shared.append(core.resolve(link.msvc_lib))
             else:
                 raise TypeError('invalid entry in links: "{}"'.format(link))
 
@@ -60,7 +60,7 @@ def executable(
             scan=scan,
             debug=debug
         )
-        objects.append(core.source(obj.output))
+        objects.append(core.resolve(obj.output))
 
     yield core.publish(
         inputs=objects + static + shared,
@@ -140,7 +140,7 @@ def static_library(
         outputs=[name],
         result={
             'type': 'cpp.static_library',
-            'headers': core.absolute(core.source(headers))
+            'headers': core.absolute(core.resolve(headers))
         },
         check=linkflags
     )
@@ -218,7 +218,7 @@ def shared_library(
         result={
             'type': 'cpp.shared_library',
             'msvc_lib': core.absolute(lib),
-            'headers': core.absolute(core.source(headers)),
+            'headers': core.absolute(core.resolve(headers)),
             'output': core.absolute(name)
         },
         check=linkflags
@@ -256,7 +256,7 @@ def object(
     if not sources:
         raise ValueError('sources must not be empty')
 
-    sources = core.source(sources)
+    sources = core.resolve(sources)
     include = list(include) if include else []
     define = dict(define) if define else {}
     flags = list(flags) if flags else []

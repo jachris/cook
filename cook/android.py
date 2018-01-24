@@ -88,8 +88,8 @@ def native_app(name, sources=None, archs=None):
         libs.append(lib.output)
 
     name = core.build(name + '.apk')
-    manifest = core.source('AndroidManifest.xml')
-    res = core.source('res')
+    manifest = core.resolve('AndroidManifest.xml')
+    res = core.resolve('res')
 
     with open(manifest) as file:
         content = file.read()
@@ -122,7 +122,7 @@ def native_app(name, sources=None, archs=None):
     os.mkdir(cls_dir)
 
     clspath = ';'.join([_android, cls_dir, res_dir])
-    srcpath = core.source('src')
+    srcpath = core.resolve('src')
 
     comp_cmd = [
         _javac, '-d', cls_dir, '-classpath', clspath,
@@ -160,7 +160,7 @@ def native_app(name, sources=None, archs=None):
 
 @core.rule
 def install(name, app, launch=False):
-    apk = core.source(app.output)
+    apk = core.resolve(app.output)
 
     yield core.publish(
         inputs=[apk],

@@ -9,7 +9,7 @@ def cmake(directory, retrieve):
     if not isinstance(retrieve, dict):
         retrieve = {core.build(x): x for x in retrieve}
 
-    directory = core.absolute(core.source(directory))
+    directory = core.absolute(core.resolve(directory))
     contents = core.glob(os.path.join(directory, '**'))
     exe = core.which('cmake')
 
@@ -35,7 +35,7 @@ def ninja(directory, retrieve):
     if not isinstance(retrieve, dict):
         retrieve = {core.build(x): x for x in retrieve}
 
-    directory = core.absolute(core.source(directory))
+    directory = core.absolute(core.resolve(directory))
     contents = core.glob(os.path.join(directory, '**'))
     exe = core.which('ninja')
 
@@ -60,7 +60,7 @@ def make(directory, retrieve):
     if not isinstance(retrieve, dict):
         retrieve = {core.build(x): x for x in retrieve}
 
-    directory = core.absolute(core.source(directory))
+    directory = core.absolute(core.resolve(directory))
     contents = core.glob(os.path.join(directory, '**'))
     exe = core.which('make')
 
@@ -85,7 +85,7 @@ def cook(directory, retrieve):
     if not isinstance(retrieve, dict):
         retrieve = {core.build(x): x for x in retrieve}
 
-    directory = core.absolute(core.source(directory))
+    directory = core.absolute(core.resolve(directory))
     contents = core.glob(os.path.join(directory, '**'))
     exe = core.which('cook')
 
