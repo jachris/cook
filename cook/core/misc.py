@@ -8,7 +8,7 @@ import subprocess
 import sys
 import threading
 
-from . import loader, log
+from . import log
 
 system = platform.system()
 linux = system == 'Linux'
@@ -127,10 +127,12 @@ def which(file, env=os.environ):
 
 if sys.version_info >= (3, 5):
     def glob(pathname):
+        from . import loader
         return absolute(filter(os.path.isfile, _glob.iglob(
             loader.resolve(pathname), recursive=True)))
 else:
     def glob(pathname):
+        from . import loader
         return absolute(filter(os.path.isfile, _iglob(
             loader.resolve(pathname))))
 
