@@ -24,7 +24,7 @@ core.absolute(path_or_paths)
 
 If `path_or_paths` is a single `str`, then its absolute path version will be
 returned as a single `str` as well. Otherwise, it will be considered as an
-iterable an a `list` with the absolute path of all given paths will be 
+iterable an a `list` with the absolute path of all given paths will be
 returned.
 
 
@@ -34,7 +34,7 @@ returned.
 core.base_no_ext(path)
 ```
 
-Return the basename of the input `path` without its extension. For example 
+Return the basename of the input `path` without its extension. For example
 `/test/example.png` will return `example`.
 
 
@@ -73,8 +73,8 @@ output of the command is available as the instance variable `output`.
 core.checksum(*objects)
 ```
 
-Calculate an MD5-checksum (128 bits) of the given object. The types of the 
-object and sub-objects (in case of containers) may only consist of 
+Calculate an MD5-checksum (128 bits) of the given object. The types of the
+object and sub-objects (in case of containers) may only consist of
 
 - int
 - None
@@ -85,8 +85,8 @@ object and sub-objects (in case of containers) may only consist of
 - set, frozenset, ...
 - list, tuple, generator, ...
 
-A TypeError will be raised if an unsupported type is encountered. The builtin 
-hash-function is different, since it has randomized output for strings, bytes 
+A TypeError will be raised if an unsupported type is encountered. The builtin
+hash-function is different, since it has randomized output for strings, bytes
 and datetime objects and is sometimes even slower. This can be useful if you
 want to provide an anonymous version of rules to give outputs a name depending
 on other inputs. It is also used internally to process the `check` argument of
@@ -102,7 +102,7 @@ core.warning(*objects, sep=' ')
 core.error(*objects, sep=' ')
 ```
 
-Emit a log entry on the given level. The `objects` will be transformed to 
+Emit a log entry on the given level. The `objects` will be transformed to
 `str` and then joined by the separator given by `sep`.
 
 
@@ -193,11 +193,11 @@ True if the host is a mac system.
 core.option(name, type=bool, default=None, help='')
 ```
 
-Declare an option with the identifier `name`. The `type` may be one of `str`, 
+Declare an option with the identifier `name`. The `type` may be one of `str`,
 `int`, `bool` and `float`. The `default` will be returned if no value was given
 by the user. You can also specify a `help` message giving more information
 about the option. Any option name can only be declared once. If you need an
-option in multiple files, you need to either `core.load()` a common file to 
+option in multiple files, you need to either `core.load()` a common file to
 share the option or if one loads the other, then you can access the option if
 it is a global symbol.
 
@@ -208,7 +208,7 @@ Informs the system about the task.
 
 ```python
 core.publish(
-    inputs=None, message=None, outputs=None, check=None, force=False, 
+    inputs=None, message=None, outputs=None, check=None, force=False,
     result=None, phony=False
 )
 ```
@@ -265,7 +265,18 @@ core.relative(path_or_paths)
 
 Same `path_or_paths` interpretation as in `core.absolute()`. All paths will be
 transformed to relative ones according to the directory where Cook is executed.
-This is not the same as `core.source()`.
+This is not the same as `core.resolve()`.
+
+
+## core.**resolve()**
+
+```python
+core.resolve(path_or_paths)
+```
+
+Same `path_or_paths` interpretation as in `core.absolute()`. All paths will be
+interpreted relatively to the currently loaded script. This is not the same as
+`core.relative()`.
 
 
 ## core.**rule()**
@@ -275,17 +286,6 @@ core.rule(func)
 ```
 
 Transform the given `func` to a rule. This should be used as a decorator.
-
-
-## core.**source()**
-
-```python
-core.source(path_or_paths)
-```
-
-Same `path_or_paths` interpretation as in `core.absolute()`. All paths will be
-interpreted relatively to the currently loaded script. This is not the same as
-`core.relative()`.
 
 
 ## core.**task()**

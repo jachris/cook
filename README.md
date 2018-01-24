@@ -12,16 +12,16 @@
 
 Cook is an extensible, dynamic, parallel and cross-platform
 build system. It is based on the concept that writing build definitions should
-be as powerful and easy as possible, which is why everything in Python. While 
-many other systems may be slightly faster in benchmarks, we believe that, at 
-least for most projects, these differences do not outweigh the advantages you 
+be as powerful and easy as possible, which is why everything in Python. While
+many other systems may be slightly faster in benchmarks, we believe that, at
+least for most projects, these differences do not outweigh the advantages you
 get by using a more powerful system.
 
 
 ## Example
 
-Using the built-in rules is straightforward. You just import the corresponding 
-module and call the supplied rule. This is all you need to get a working build 
+Using the built-in rules is straightforward. You just import the corresponding
+module and call the supplied rule. This is all you need to get a working build
 going. The following example will automatically work on any supported platform.
 
 ```python
@@ -33,8 +33,8 @@ cpp.executable(
 )
 ```
 
-Executing this script will build an executable using the correct 
-platform-specific details. For example, the output is either named `main` or 
+Executing this script will build an executable using the correct
+platform-specific details. For example, the output is either named `main` or
 `main.exe` depending on the operating system.
 
 ```
@@ -48,9 +48,9 @@ $ ls build/
 main
 ```
 
-You can also easily create your own rules. Upon calling, they are executed 
-until the required information is passed back to the system using 
-`yield core.publish(...)`. Everything after that is executed shortly after if 
+You can also easily create your own rules. Upon calling, they are executed
+until the required information is passed back to the system using
+`yield core.publish(...)`. Everything after that is executed shortly after if
 the system decides it is necessary to do so.
 
 ```python
@@ -58,7 +58,7 @@ from cook import core
 
 @core.rule
 def replace(source, destination, mapping):
-    source = core.source(source)
+    source = core.resolve(source)
     destination = core.build(destination)
 
     yield core.publish(
@@ -67,7 +67,7 @@ def replace(source, destination, mapping):
         outputs=[destination],
         check=mapping
     )
-    
+
     with open(source) as file:
         content = file.read()
     for key, value in mapping.items():

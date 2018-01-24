@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.2.0] - 2017-08-17
 ### Added
-- Decorator to `core.cache()` function results 
+- Decorator to `core.cache()` function results
 - New generic rule `misc.run()`
 - Basic option enumeration by using `cook --options`
 - C++ toolchains are now public (`cpp.GNU` and `cpp.MSVC`)
