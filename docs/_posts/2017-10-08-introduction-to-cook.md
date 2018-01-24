@@ -2,11 +2,11 @@
 title: Introduction to Cook
 ---
 
-Welcome to the introductory blog post about Cook---a new build system. You are 
+Welcome to the introductory blog post about Cook---a new build system. You are
 probably asking yourself: Why do we need yet another build system? As of now,
 [Wikipedia lists close to 50 candidates](https://en.wikipedia.org/wiki/List_of_build_automation_software).
 
-Let's start with one simple observation: [All build systems suck](http://msoucy.me/seminars/bss/#(1)). 
+Let's start with one simple observation: [All build systems suck](http://msoucy.me/seminars/bss/#(1)).
 While some may suck less, there is not a single one that's *really* great. And
 let's be honest: Cook won't change this. There are just too many aspects about
 building software, which makes building that one tool that fits
@@ -15,7 +15,7 @@ all purposes very difficult.
 * TOC
 {:toc}
 
-**Note:** Cook is currently in version 0.2.0---which means a lot of things 
+**Note:** Cook is currently in version 0.2.0---which means a lot of things
 still need some work. Contributors are very welcome! Please help in making this
 project a great build-system. Or just play a little bit around with the project
 using the examples. Everything is appreciated.
@@ -33,13 +33,13 @@ Cook was created to address two specific problems, which are somehow related:
   until it somehow works---for that one developer at least. Others probably
   won't have fun using that hotchpotch. This is sometimes caused by poor API
   design and in CMake's case, the language probably makes it even worse.
-  
+
   Additionally, most codebases are so
   complex that truly understanding the system is impossible: While you don't
-  need to know how a car works in order to drive one, there should at least be 
+  need to know how a car works in order to drive one, there should at least be
   the possibility to understand how it works given enough interest and time.
-  [Bazel](https://bazel.build/) clocks in at 3.3K Java files with a total size 
-  of 26MB---and that's just counting the core (`bazel/src/`). 
+  [Bazel](https://bazel.build/) clocks in at 3.3K Java files with a total size
+  of 26MB---and that's just counting the core (`bazel/src/`).
   [CMake](https://cmake.org/) is about 1.75K `.cxx` or `.cmake` files which are
   about 11MB in total. This makes introducing new bugs easier and solving known
   problems harder.
@@ -54,23 +54,23 @@ Cook was created to address two specific problems, which are somehow related:
 
   Wouldn't it be cool if one could
   just write custom tasks down linearly like they will be executed by the
-  system? This is not about simple commands---it's about complex behaviours 
+  system? This is not about simple commands---it's about complex behaviours
   which are at hand when dealing with non-trivial builds, i.e. returning the
   output of gcc's `-MD` (which lists all used files during the compilation) to
   the system. Using Cook, this is possible. You can use the whole Python
   standard library and some convenience functions provided by Cook to script
   complex behaviour which integrates nicely into the whole build process.
 
-Don't get me wrong: CMake and Bazel are really doing a good job. They are 
+Don't get me wrong: CMake and Bazel are really doing a good job. They are
 quite powerful, have support for project generation for many IDEs,
-integrated packaging and testing or scalability. It just happens that their 
+integrated packaging and testing or scalability. It just happens that their
 goals do not align well with some people's needs.
 
-Cook currently has 21 source files with a total size of 0.073MB---including 
+Cook currently has 21 source files with a total size of 0.073MB---including
 rules for C++, GIMP, LaTeX (currently not that good), LibreOffice and other
 miscellaneous rules. Extending it by writing a custom one is really easy, but
 let's first take a look at how to use the built-in rules.
-  
+
 
 ## Hello World
 
@@ -97,7 +97,7 @@ cpp.executable(
 )
 ```
 
-We are importing the `cpp` package here since we want to build a c++ 
+We are importing the `cpp` package here since we want to build a c++
 `executable`.
 
 ```
@@ -129,9 +129,9 @@ cpp.static_library(
 )
 ```
 
-Sometimes you want to enable or disable certain features of your application 
+Sometimes you want to enable or disable certain features of your application
 during compilation, for example when having a lite and professional version.
-Cook allows declaring options of various types which can be set upon 
+Cook allows declaring options of various types which can be set upon
 invocation. Also note that we are linking with some Boost libraries easily.
 
 ```python
@@ -149,13 +149,13 @@ cpp.executable(
 )
 ```
 
-Building the lite version is now performed using `cook lite=1`, while the 
+Building the lite version is now performed using `cook lite=1`, while the
 professional version will be built as usual: `cook`. You can also list all
 available options:
 
 ```
 $ cook --options
-name       type  default    help                
+name       type  default    help
 ----------------------------------------------------------------------
 lite       bool  True       build lite version instead of professional
 ```
@@ -163,7 +163,7 @@ lite       bool  True       build lite version instead of professional
 
 ## Custom Rules
 
-Here is a little snippet showing a rule which replaces occurrences of a string 
+Here is a little snippet showing a rule which replaces occurrences of a string
 with another.
 
 ```python
@@ -171,7 +171,7 @@ from cook import core
 
 @core.rule
 def replace(source, destination, mapping):
-    source = core.source(source)
+    source = core.resolve(source)
     destination = core.build(destination)
 
     yield core.publish(
@@ -187,9 +187,9 @@ def replace(source, destination, mapping):
         content = content.replace(key, value)
     with open(destination, 'w') as file:
         file.write(content)
-        
+
 year = core.option('year', int, 1979, 'overwrite the year of publication')
-        
+
 replace(
     source='foo.txt',
     destination='out.txt',
@@ -201,15 +201,15 @@ replace(
 )
 ```
 
-Just a few words on how this works: `core.source` and `core.build` interpret
-the following path relative to the currently evaluated build-script 
+Just a few words on how this works: `core.resolve` and `core.build` interpret
+the following path relative to the currently evaluated build-script
 respectively the build directory. The `yield` statement pauses execution of the
 rule---it will continue if and when the system decides it should. The `mapping`
 is passed using the `check` keyword argument. This will make the system look at
-the `mapping` and detect if it changed after the last run, because then it must 
+the `mapping` and detect if it changed after the last run, because then it must
 be redone.
 
-If you want to know more about creating custom rules, make sure to 
+If you want to know more about creating custom rules, make sure to
 [check out the docs](/docs/custom-rules/).
 
 
@@ -218,32 +218,32 @@ If you want to know more about creating custom rules, make sure to
 - Compiler warnings are emitted and stored for the following builds in order
   to re-emit them without recompiling. This guarantees correctness.
 - Automatically detects libraries on all operating systems.
-- Sane language. Python is arguably one of the most concise and best-to-read 
+- Sane language. Python is arguably one of the most concise and best-to-read
   languages currently available. Since Cook is 100% Python, you can also use
-  a debugger to inspect tasks when custom rules break.  
-- While C++ rules are the most stable for now, there are already rules for 
+  a debugger to inspect tasks when custom rules break.
+- While C++ rules are the most stable for now, there are already rules for
   general file handling, downloading, LaTeX documents (very basic), LibreOffice
-  and GIMP export. The last three make creating documents which include 
+  and GIMP export. The last three make creating documents which include
   graphics produced by LibreOffice or GIMP much easier.
 - Support for Microsoft Visual Compiler (not Studio) 2005--2017.
-- Basic IDE project generation is in the works. However, the IDE must still 
+- Basic IDE project generation is in the works. However, the IDE must still
   call Cook for doing the build---which means no MSBuild.
 - Other build-scripts can be imported using `core.load()`.
 - The state of the build tree is also looked at when considering which tasks to
-  run. You could even go ahead and edit the resulting build files without 
+  run. You could even go ahead and edit the resulting build files without
   breaking subsequent builds.
 
 
 ## Closing Words
 
-We hope to have given you a brief overview about the project. This was in no 
-way an article covering the whole spectrum of things to be said, but if we 
-caught your interest, then you can take a look at the 
+We hope to have given you a brief overview about the project. This was in no
+way an article covering the whole spectrum of things to be said, but if we
+caught your interest, then you can take a look at the
 [GitHub repository](https://github.com/jachris/cook). While not all parts are
 great from a coding-style point of view yet, it is hopefully sufficiently
 polished to get you started. Feel free to
-[open an issue](https://github.com/jachris/cook/issues) or maybe even upload a 
+[open an issue](https://github.com/jachris/cook/issues) or maybe even upload a
 pull request. Your help is very much appreciated.
 
-If you need more information about Cook, make sure to [read more about its 
+If you need more information about Cook, make sure to [read more about its
 features](/docs/features/).
