@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+Nothing.
+
+## [0.3.0] - 2018-03-13
+
 ### Added
 - Libraries are automatically detected on Windows now as well
 - C++ rules allow specifying `linkflags`
@@ -18,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add WIP (very basic for now) rules for external projects / build systems
 - Build can now be stopped gracefully (Ctrl+C)
 - Added `-f` / `--fastfail` flag to immediately exit after first failed task
+- Renamed `core.source()` to `core.resolve()`
 
 ### Changed
 - Using `cook --targets` will now list paths relative to the build directory
@@ -56,5 +62,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 Initial version.
 
-[Unreleased]: https://github.com/jachris/cook/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/jachris/cook/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/jachris/cook/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/jachris/cook/compare/v0.1.0...v0.2.0

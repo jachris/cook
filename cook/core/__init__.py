@@ -9,4 +9,4 @@ from .options import option
 from .rules import rule, publish, deposit, task
 from .system import build, temporary, intermediate
 
-version = (0, 2, 0)
+version = (0, 3, 0)
