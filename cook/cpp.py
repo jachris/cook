@@ -487,7 +487,7 @@ def _get_default_compiler():
 def _get_toolchain(compiler):
     if compiler is None:
         return None
-    if 'g++' in compiler:
+    if 'g++' in compiler or 'c++' in compiler:
         return GNU
     if 'clang' in compiler:
         return GNU
