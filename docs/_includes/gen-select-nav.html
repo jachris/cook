@@ -1,4 +1,0 @@
-{% assign current = page.url %}
-{% for entry in include.entries %}
-    <option value="{{ entry.link }}" {% if entry.link == current %}selected{% endif %}>{{ entry.name }}</option>
-{% endfor %}

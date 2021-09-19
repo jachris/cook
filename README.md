@@ -1,8 +1,5 @@
 # [Cook — A Modern Build System](https://getcook.org/)
 
-[![Travis](https://api.travis-ci.org/jachris/cook.svg)](https://travis-ci.org/jachris/cook)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/jachris/cook?svg=true)](https://ci.appveyor.com/project/jachris/cook)
-
 :snowflake: **Development is paused for now but may be resumed in the future.**
 
 :zap: **This software is currently in alpha and not ready for production use.**
